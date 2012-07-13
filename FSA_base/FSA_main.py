@@ -5,7 +5,8 @@ Created on 12.07.2012
 
 @author: werer
 '''
-from pysqlite2 import dbapi2 as sqlite
+#from pysqlite2 import dbapi2 as sqlite
+import sqlite3 as sqlite
 import os, sys
 from encodings.utf_16 import encode
 def main():
@@ -15,7 +16,7 @@ def main():
     trend_base.create(1)
     #trend_base.refresh()
     nm = u"'Основы инорматики'"
-    cm = u"'Данный вид деятельности не способствует умственному развититию особей homo sapiens'"
+    cm = u"'Тест тест'"
     sa = u"'http://ya.ru'"
     trend_base.add_data(nm +u', '+ cm +u', '+ sa)
     #trend_base.print_db()
