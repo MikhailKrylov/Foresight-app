@@ -6,13 +6,14 @@ Created on 12.07.2012
 @author: werer
 '''
 #from pysqlite2 import dbapi2 as sqlite
-import sqlite3 as sqlite
-import traceback
+
 import string
-import os, sys
+
+import db_interface
 from encodings.utf_16 import encode
 def main():
-    trend_base = base()
+    type_string = "trend_name UTF8(100), comment UTF8(300),  sources TEXT(300), rsh TEXT(300), s_point INTEGER(32), f_point INTEGER(32)"
+    trend_base = db_interface.base(type_string)
     #trend_base.delete_db()
     trend_base.connect_db()
     trend_base.create(1)
@@ -20,55 +21,14 @@ def main():
     nm = u"'Основы инорматики'"
     cm = u"'Тест тест'"
     sa = u"'http://ya.ru'"
-    trend_base.add_data(nm +u', '+ cm +u', '+ sa)
-    #trend_base.print_db()
-    #trend_base.add_data('"Основы инорматики", "Данный вид деятельности не способствует умственному развититию особей homo sapiens", "http://ya.ru"')
+    sv = u"'[2,4], [3,-2]'"
+    s_p = u"30000"
+    f_p = u"45555"
+    trend_base.add_data(nm +u', '+ cm +u', '+ sa+',' + sv+u',' + s_p+u',' + f_p)
     trend_base.print_db()
     
 
 
-class base:
-    def __init__(self, name = "fs_db.db", type_str = "trend_name UTF8(100), comment UTF8(300), sources TEXT(300), rsh TEXT(300)"):
-        self.name = name
-        self.type_str = type_str
-    def create(self, key = 0):
-        try:
-            if key == 1:
-                self.refresh_db()
-            self.cursor.execute('CREATE TABLE trends (id INTEGER PRIMARY KEY, '+self.type_str+')')
-            #self.cursor.execute('PRAGMA encoding = "UTF-8"')
-            #self.connect.commit('SET COLLATION_CONNECTION="utf8_general_ci"')
-        except:
-            print u"Ошибка: Невозможно создать базу."
-    def print_db(self):
-        try:
-            self.cursor.execute('SELECT * FROM trends ')
-            strr = self.cursor.fetchall()  
-
-            print("\n".join(map(str, strr[0])))
-            #print(strr)
-        except:
-            traceback.print_exc()
-            print "Ошибка: Не возможно вывести базу данных"
-    def add_data(self, data_str):
-        try:
-            self.cursor.execute('INSERT INTO trends (id, trend_name, comment, sources) VALUES(NULL, "qeddr", "rddt", "мама")')
-            #self.cursor.execute('INSERT INTO trends (id, trend_name, comment, sources) VALUES(NULL,'+data_str+')')
-            self.connect.commit()
-        except:
-            print u"Ошибка: Невозможно добавить данные в базу."
-    def delete_db(self):
-        try:
-            self.connect.close()
-            os.remove(self.name)
-        except:
-            print u"Ошибка: Невозможно удалить базу данных."
-    def refresh_db(self):
-        self.delete_db()
-        self.connect_db()
-    def connect_db(self):
-        self.connect = sqlite.connect(self.name)
-        self.cursor = self.connect.cursor()
 
 main()
     
