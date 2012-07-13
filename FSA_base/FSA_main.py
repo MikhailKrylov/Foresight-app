@@ -7,6 +7,8 @@ Created on 12.07.2012
 '''
 #from pysqlite2 import dbapi2 as sqlite
 import sqlite3 as sqlite
+import traceback
+import string
 import os, sys
 from encodings.utf_16 import encode
 def main():
@@ -26,7 +28,7 @@ def main():
 
 
 class base:
-    def __init__(self, name = "fs_db.db", type_str = "trend_name UTF8(100), comment UTF8(300), sources TEXT(300)"):
+    def __init__(self, name = "fs_db.db", type_str = "trend_name UTF8(100), comment UTF8(300), sources TEXT(300), rsh TEXT(300)"):
         self.name = name
         self.type_str = type_str
     def create(self, key = 0):
@@ -42,13 +44,16 @@ class base:
         try:
             self.cursor.execute('SELECT * FROM trends ')
             strr = self.cursor.fetchall()  
-            print strr
+
+            print("\n".join(map(str, strr[0])))
+            #print(strr)
         except:
+            traceback.print_exc()
             print "Ошибка: Не возможно вывести базу данных"
     def add_data(self, data_str):
         try:
-           # self.cursor.execute('INSERT INTO trends (id, trend_name, comment, sources) VALUES(NULL, "qeddr", "rddt", "мама")')
-            self.cursor.execute('INSERT INTO trends (id, trend_name, comment, sources) VALUES(NULL,'+data_str+')')
+            self.cursor.execute('INSERT INTO trends (id, trend_name, comment, sources) VALUES(NULL, "qeddr", "rddt", "мама")')
+            #self.cursor.execute('INSERT INTO trends (id, trend_name, comment, sources) VALUES(NULL,'+data_str+')')
             self.connect.commit()
         except:
             print u"Ошибка: Невозможно добавить данные в базу."
