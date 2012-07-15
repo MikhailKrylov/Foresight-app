@@ -11,7 +11,10 @@ import string
 
 import db_interface
 from encodings.utf_16 import encode
+import FSA_interface
+from FSA_interface import fsainterface
 def main():
+    interface = fsainterface()
     type_string = "trend_name UTF8(100), comment UTF8(300),  sources TEXT(300), rsh TEXT(300), s_point INTEGER(32), f_point INTEGER(32)"
     trend_base = db_interface.base(type_string)
     #trend_base.delete_db()

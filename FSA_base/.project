@@ -14,4 +14,11 @@
 	<natures>
 		<nature>org.python.pydev.pythonNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>interface.glade</name>
+			<type>1</type>
+			<location>F:/Werer/workspace/Foresight-app/FSA_base/main_interface.glade</location>
+		</link>
+	</linkedResources>
 </projectDescription>
