@@ -4,7 +4,7 @@ Created on 16.07.2012
 @author: Werer
 '''
 #-*- coding: utf8 -*-
-import sys
+import sys, random
 try:  
     import pygtk  
     pygtk.require("2.0")  
@@ -41,9 +41,10 @@ class fsainterface(object):
         sys.exit(0)
     def drawing_(self, coord):
         x1, y1, x2, y2 = coord
-        style = self.area.get_style()
-        gc = style.fg_gc[gtk.STATE_NORMAL]
         drawable = self.area.window
+        gc = drawable.new_gc()
+        color = drawable.get_colormap().alloc(random.randint(0,65535), random.randint(0,65535), random.randint(0,65535))        
+        gc.foreground =color
         drawable.draw_line(gc, x1, y1, x2, y2)
 
 aa = fsainterface()
