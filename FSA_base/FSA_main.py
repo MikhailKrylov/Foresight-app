@@ -6,12 +6,11 @@ Created on 12.07.2012
 @author: werer
 '''
 #from pysqlite2 import dbapi2 as sqlite
-
+#подключение библиотек
 import string
 
-import db_interface
-from encodings.utf_16 import encode
-import FSA_interface
+import db_interface #подключение модуля работы с базой данных
+import FSA_interface #подключение графического интерфейса
 from FSA_interface import fsainterface
 def main():
     interface = fsainterface()

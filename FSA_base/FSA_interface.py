@@ -4,6 +4,7 @@ Created on 16.07.2012
 @author: Werer
 '''
 #-*- coding: utf8 -*-
+#подключение библиотек
 import sys, random
 try:  
     import pygtk  
@@ -16,11 +17,11 @@ try:
 except:  
     print("GTK Not Availible")
     sys.exit(1)
-
+#главный класс дл€ работы с графическим интерфейсом
 class fsainterface(object):
     wTree = None
     def __init__(self):
-        self.wTree = gtk.glade.XML( "main_interface.glade" )
+        self.wTree = gtk.glade.XML( "main_interface.glade" ) #подключение glade оболочки
         dic = { 
             "quit" : self.quit,
         }
@@ -28,10 +29,10 @@ class fsainterface(object):
         self.wTree.signal_autoconnect( dic )
         self.area = self.wTree.get_widget("MainDrawingArea")
         hruler1 = self.wTree.get_widget("hruler1")
-        def motion_notify(ruler, event):
+        def motion_notify(ruler, event): #обработка движени€ мыши по зоне рисовани€
             return ruler.emit("motion_notify_event", event)
         self.area.connect_object("motion_notify_event", motion_notify, hruler1)
-        def mouseclick(Empty_arg,event = None):
+        def mouseclick(Empty_arg,event = None): #обработка щелчка мыши по зоне рисовани€
             if self.point == (-1, -1):
                 self.point = (int(event.x), int(event.y))
             else:
@@ -41,12 +42,14 @@ class fsainterface(object):
             
         self.area.connect_object("button_press_event", mouseclick, None)   
         gtk.main()
-    def quit(self, widget):
+    def quit(self, widget): #выход
         sys.exit(0)
     def drawing_(self, coord):
-        x1, y1, x2, y2 = coord
+        x1, y1, x2, y2 = coord 
         drawable = self.area.window
-        gc = drawable.new_gc()
+        #gc Graphics Context, т.е. параметры.
+        gc = drawable.new_gc() 
+        #цвет задаетс€ в интервале от 0 до 65535
         color = drawable.get_colormap().alloc(random.randint(0,65535), random.randint(0,65535), random.randint(0,65535))        
         gc.foreground =color
         gc.line_width = random.randint(1,10)
