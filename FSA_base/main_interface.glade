@@ -178,7 +178,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <widget class="GtkButton" id="ostr">
+                  <widget class="GtkButton" id="normal_trend">
                     <property name="label" translatable="yes">-----&gt;</property>
                     <property name="width_request">50</property>
                     <property name="height_request">30</property>
@@ -189,6 +189,21 @@
                   <packing>
                     <property name="x">5</property>
                     <property name="y">10</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkButton" id="f_trend">
+                    <property name="label" translatable="yes">====&gt;
+</property>
+                    <property name="width_request">50</property>
+                    <property name="height_request">30</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                  </widget>
+                  <packing>
+                    <property name="x">5</property>
+                    <property name="y">45</property>
                   </packing>
                 </child>
               </widget>
@@ -202,10 +217,10 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <child>
-                  <widget class="GtkImage" id="image1">
+                  <widget class="GtkDrawingArea" id="MainDrawingArea">
+                    <property name="height_request">30</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="stock">gtk-missing-image</property>
                   </widget>
                   <packing>
                     <property name="resize">False</property>
