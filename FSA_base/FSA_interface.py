@@ -24,16 +24,20 @@ class fsainterface(object):
         dic = { 
             "quit" : self.quit,
         }
+        self.point = (-1,-1)
         self.wTree.signal_autoconnect( dic )
         self.area = self.wTree.get_widget("MainDrawingArea")
         hruler1 = self.wTree.get_widget("hruler1")
         def motion_notify(ruler, event):
             return ruler.emit("motion_notify_event", event)
         self.area.connect_object("motion_notify_event", motion_notify, hruler1)
-        # self.drawing_(coord)
         def mouseclick(Empty_arg,event = None):
-            coord = (0,0, int(event.x), int(event.y))
-            self.drawing_(coord)
+            if self.point == (-1, -1):
+                self.point = (int(event.x), int(event.y))
+            else:
+                coord = (self.point[0],self.point[1], int(event.x), int(event.y))
+                self.drawing_(coord)
+                self.point = (-1,-1)
             
         self.area.connect_object("button_press_event", mouseclick, None)   
         gtk.main()
@@ -45,6 +49,7 @@ class fsainterface(object):
         gc = drawable.new_gc()
         color = drawable.get_colormap().alloc(random.randint(0,65535), random.randint(0,65535), random.randint(0,65535))        
         gc.foreground =color
+        gc.line_width = random.randint(1,10)
         drawable.draw_line(gc, x1, y1, x2, y2)
 
 aa = fsainterface()
