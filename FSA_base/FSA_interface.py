@@ -25,12 +25,10 @@ class fsainterface(object):
             "quit" : self.quit,
         }
         self.wTree.signal_autoconnect( dic )
-        window = self.wTree.get_widget("window1")
         hruler1 = self.wTree.get_widget("hruler1")
-        image1 = self.wTree.get_widget("MainDrawingArea")
         def motion_notify(ruler, event):
             return ruler.emit("motion_notify_event", event)
-        image1.connect_object("motion_notify_event", motion_notify, hruler1)
+        self.wTree.get_widget("MainDrawingArea").connect_object("motion_notify_event", motion_notify, hruler1)
         gtk.main()
     def quit(self, widget):
         sys.exit(0)
