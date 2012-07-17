@@ -16,9 +16,9 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>interface.glade</name>
+			<name>Font_Selection_interface.glade</name>
 			<type>1</type>
-			<location>F:/Werer/workspace/Foresight-app/FSA_base/main_interface.glade</location>
+			<location>/media/2D38-14DF/workspace/FSA-app/FSA_base/Font_Selection_interface.glade</location>
 		</link>
 	</linkedResources>
 </projectDescription>
