@@ -46,15 +46,13 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <widget class="GtkButton" id="Font_d_Ok_btn">
+              <widget class="GtkButton" id="Ok_btn">
                 <property name="label" translatable="yes">OK</property>
                 <property name="width_request">100</property>
                 <property name="height_request">80</property>
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
-                <signal name="clicked" handler="Ok_btn_clicked" swapped="no"/>
+                <property name="can_focus">False</property>
+                <property name="receives_default">False</property>
               </widget>
               <packing>
                 <property name="x">9</property>
@@ -62,15 +60,13 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkButton" id="Close_btn">
+              <widget class="GtkButton" id="cancel_btn">
                 <property name="label" translatable="yes">Закрыть</property>
                 <property name="width_request">100</property>
                 <property name="height_request">80</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
-                <signal name="clicked" handler="Close_btn_clicked" swapped="no"/>
               </widget>
               <packing>
                 <property name="x">120</property>
