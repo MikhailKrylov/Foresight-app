@@ -6,7 +6,7 @@ Created on 16.07.2012
 '''
 
 #подключение библиотек
-import sys, random
+import sys, random, pango
 try:  
     import pygtk  
     pygtk.require("2.0")  
@@ -18,7 +18,7 @@ try:
 except:  
     print("GTK Not Availible")
     sys.exit(1)
-    
+
 #главный класс для работы с графическим интерфейсом
 class Font_selection_window(object):
     wTree = None
@@ -88,8 +88,10 @@ class fsainterface(object):
         gc = drawable.new_gc() 
         #gc.foreground = color
         font = gtk.gdk.Font(self.font)
-        drawable.draw_text(font, gc, x1, y1 , str(self.font))
-    
+        gc.font = font
+        layout = self.area.create_pango_layout("Text")
+        layout.set_font_description(pango.FontDescription(self.font))
+        drawable.draw_layout(gc, x1, y1, layout)
         
 aa = fsainterface()
         
