@@ -6,7 +6,7 @@ import string
 import traceback
 
 class base: #главный класс для работы с базой данных 
-        def __init__(self, type_str, name = "fs_db.db"):
+    def __init__(self, type_str, name = "fs_db.db"):
         self.name = name
         self.type_str = type_str
     def create(self, key = 0): #создание новой БД
@@ -23,7 +23,8 @@ class base: #главный класс для работы с базой дан�
             strr = self.cursor.fetchall()  
 
             #print("\n".join(map(str, strr[0])))
-            print "\n".join(map(lambda x: "\n" +"; ".join(map(str, x)), strr))
+            strret =  "\n".join(map(lambda x: "\n" +"; ".join(map(str, x)), strr))
+            return strret
             #print(strr)
         except:
             traceback.print_exc()

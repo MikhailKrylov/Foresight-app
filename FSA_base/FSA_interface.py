@@ -18,7 +18,7 @@ try:
 except:  
     print("GTK Not Availible")
     sys.exit(1)
-
+import db_interface #подключение модуля работы с базой данных
 #главный класс для работы с графическим интерфейсом
 class Font_selection_window(object):
     wTree = None
@@ -55,22 +55,21 @@ class fsainterface(object):
         self.area.connect_object("motion_notify_event", motion_notify, hruler1)
         def mouseclick(Empty_arg,event = None): #обработка щелчка мыши по зоне рисования
             coord = (int(event.x), int(event.y),0,0)
-            self.draw_text(coord)
-            '''
+            self.db_visual(coord)
             if self.point == (-1, -1):
                 self.point = (int(event.x), int(event.y))
             else:
                 coord = (self.point[0],self.point[1], int(event.x), int(event.y))
                 self.drawing_(coord)
                 self.point = (-1,-1)
-            '''
+
         self.area.connect_object("button_press_event", mouseclick, None)  
         self.font_sel_btn.connect("button_press_event", self.open_font_dialog) 
         gtk.main()
     def open_font_dialog(self, widget, ttt):
         fsw = Font_selection_window(self) 
     def quit(self, widget): #выход
-        sys.exit(0)
+        self.wTree.get_widget("MainWindow").destroy()
     def drawing_(self, coord):
         x1, y1, x2, y2 = coord 
         drawable = self.area.window
@@ -81,17 +80,31 @@ class fsainterface(object):
         gc.foreground =color
         gc.line_width = random.randint(1,10)
         drawable.draw_line(gc, x1, y1, x2, y2)
-    def draw_text(self, coord):
+    def draw_text(self, coord, text):
         x1, y1, x2, y2 = coord 
         drawable = self.area.window
-        #color = drawable.get_colormap().alloc(random.randint(0,65535), random.randint(0,65535), random.randint(0,65535))
+        color = drawable.get_colormap().alloc(random.randint(0,65535), random.randint(0,65535), random.randint(0,65535))
         gc = drawable.new_gc() 
-        #gc.foreground = color
+        gc.foreground = color
         font = gtk.gdk.Font(self.font)
-        gc.font = font
-        layout = self.area.create_pango_layout("Text")
+        layout = self.area.create_pango_layout(text)
         layout.set_font_description(pango.FontDescription(self.font))
         drawable.draw_layout(gc, x1, y1, layout)
+    def db_visual(self,coord):
+        type_string = "trend_name UTF8(100), comment UTF8(300),  sources TEXT(300), rsh TEXT(300), s_point INTEGER(32), f_point INTEGER(32)"
+        trend_base = db_interface.base(type_string)
+        #trend_base.delete_db()
+        trend_base.connect_db()
+        trend_base.create(1)
+        #trend_base.refresh()
+        nm = u"'Основы инорматики'"
+        cm = u"'Тест тест'"
+        sa = u"'http://ya.ru'"
+        sv = u"'[2,4], [3,-2]'"
+        s_p = u"30000"
+        f_p = u"45555"
+        trend_base.add_data(nm +u', '+ cm +u', '+ sa+',' + sv+u',' + s_p+u',' + f_p)
+        drstr = trend_base.print_db()
+        self.draw_text(coord, drstr)
         
-aa = fsainterface()
         

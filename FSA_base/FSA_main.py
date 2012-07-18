@@ -8,7 +8,7 @@ Created on 12.07.2012
 #from pysqlite2 import dbapi2 as sqlite
 #подключение библиотек
 import string
-
+import thread
 import db_interface #подключение модуля работы с базой данных
 import FSA_interface #подключение графического интерфейса
 from FSA_interface import fsainterface
@@ -26,6 +26,7 @@ def main():
     sv = u"'[2,4], [3,-2]'"
     s_p = u"30000"
     f_p = u"45555"
+    interface.draw_text((200,300,0,0), "Text")
     trend_base.add_data(nm +u', '+ cm +u', '+ sa+',' + sv+u',' + s_p+u',' + f_p)
     trend_base.print_db()
     
