@@ -15,19 +15,19 @@
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="position">10</property>
-        <property name="position_set">True</property>
         <child>
           <widget class="GtkMenuBar" id="menubar1">
             <property name="width_request">100</property>
-            <property name="height_request">35</property>
+            <property name="height_request">40</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
               <widget class="GtkMenuItem" id="menuitem1">
                 <property name="width_request">53</property>
-                <property name="height_request">10</property>
+                <property name="height_request">35</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">_Файл</property>
                 <property name="use_underline">True</property>
                 <child>
@@ -40,6 +40,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="events">GDK_BUTTON_PRESS_MASK | GDK_STRUCTURE_MASK</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </widget>
@@ -49,6 +50,7 @@
                         <property name="label">gtk-open</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </widget>
@@ -58,6 +60,7 @@
                         <property name="label">gtk-save</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </widget>
@@ -67,6 +70,7 @@
                         <property name="label">gtk-save-as</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </widget>
@@ -82,6 +86,7 @@
                         <property name="label">gtk-quit</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </widget>
@@ -93,9 +98,10 @@
             <child>
               <widget class="GtkMenuItem" id="menuitem2">
                 <property name="width_request">65</property>
-                <property name="height_request">20</property>
+                <property name="height_request">35</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">_Правка</property>
                 <property name="use_underline">True</property>
                 <child>
@@ -107,6 +113,7 @@
                         <property name="label">gtk-cut</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </widget>
@@ -116,6 +123,7 @@
                         <property name="label">gtk-copy</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </widget>
@@ -125,6 +133,7 @@
                         <property name="label">gtk-paste</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </widget>
@@ -134,6 +143,7 @@
                         <property name="label">gtk-delete</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </widget>
@@ -148,6 +158,7 @@
                 <property name="height_request">20</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">_Вид</property>
                 <property name="use_underline">True</property>
               </widget>
@@ -158,6 +169,7 @@
                 <property name="height_request">10</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">Настройка</property>
                 <child>
                   <widget class="GtkMenu" id="menu4">
@@ -169,6 +181,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="events">GDK_BUTTON_PRESS_MASK | GDK_STRUCTURE_MASK</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </widget>
@@ -184,6 +197,7 @@
                         <property name="label">gtk-quit</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </widget>
@@ -195,9 +209,10 @@
             <child>
               <widget class="GtkMenuItem" id="menuitem4">
                 <property name="width_request">78</property>
-                <property name="height_request">10</property>
+                <property name="height_request">35</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">_Справка</property>
                 <property name="use_underline">True</property>
                 <child>
@@ -209,6 +224,7 @@
                         <property name="label">gtk-about</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </widget>
@@ -225,11 +241,14 @@
         </child>
         <child>
           <widget class="GtkHPaned" id="hpaned1">
+            <property name="width_request">800</property>
+            <property name="height_request">600</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <child>
               <widget class="GtkFixed" id="fixed1">
-                <property name="width_request">10</property>
+                <property name="width_request">50</property>
+                <property name="height_request">525</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
@@ -241,6 +260,7 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="events">GDK_BUTTON_PRESS_MASK | GDK_STRUCTURE_MASK</property>
+                    <property name="use_action_appearance">False</property>
                   </widget>
                   <packing>
                     <property name="x">5</property>
@@ -256,6 +276,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="use_action_appearance">False</property>
                   </widget>
                   <packing>
                     <property name="x">5</property>
@@ -264,30 +285,33 @@
                 </child>
               </widget>
               <packing>
-                <property name="resize">False</property>
+                <property name="resize">True</property>
                 <property name="shrink">False</property>
               </packing>
             </child>
             <child>
               <widget class="GtkVPaned" id="vpaned2">
+                <property name="width_request">750</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <child>
                   <widget class="GtkDrawingArea" id="MainDrawingArea">
-                    <property name="height_request">30</property>
+                    <property name="width_request">125</property>
+                    <property name="height_request">525</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK | GDK_STRUCTURE_MASK</property>
+                    <property name="extension_events">cursor</property>
                   </widget>
                   <packing>
                     <property name="resize">False</property>
-                    <property name="shrink">True</property>
+                    <property name="shrink">False</property>
                   </packing>
                 </child>
                 <child>
                   <widget class="GtkHRuler" id="hruler1">
-                    <property name="width_request">90</property>
-                    <property name="height_request">1</property>
+                    <property name="width_request">750</property>
+                    <property name="height_request">25</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="lower">2000</property>
@@ -303,13 +327,13 @@
               </widget>
               <packing>
                 <property name="resize">False</property>
-                <property name="shrink">True</property>
+                <property name="shrink">False</property>
               </packing>
             </child>
           </widget>
           <packing>
             <property name="resize">True</property>
-            <property name="shrink">True</property>
+            <property name="shrink">False</property>
           </packing>
         </child>
       </widget>

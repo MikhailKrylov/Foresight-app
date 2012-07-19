@@ -64,6 +64,10 @@ class fsainterface(object):
         self.font = "Sans 19"
         self.font_sel_btn = self.wTree.get_widget("font_select_btn")
         self.new_btn = self.wTree.get_widget("new_trend_btn")
+        self.hpn =  self.wTree.get_widget("vpaned2")
+       # hpn.set_position(530)
+     #   wind = self.wTree.get_widget("MainWindow")
+       # wind.set_resizable(False)
         hruler1 = self.wTree.get_widget("hruler1")
         def motion_notify(ruler, event): #обработка движения мыши по зоне рисования
             return ruler.emit("motion_notify_event", event)
@@ -80,7 +84,7 @@ class fsainterface(object):
                 self.point = (-1,-1)
 
         self.area.connect_object("button_press_event", mouseclick, None)  
-        self.font_sel_btn.connect("button_press_event", self.open_font_dialog) 
+        self.font_sel_btn.connect("button_press_event", self.open_font_dialog)
         gtk.main()
     def open_font_dialog(self, widget, Emty_arg):#вызов диалога выбора шрифта
         fsw = Font_selection_window(self) 
@@ -104,7 +108,6 @@ class fsainterface(object):
         color = drawable.get_colormap().alloc(random.randint(0,65535), random.randint(0,65535), random.randint(0,65535))
         gc = drawable.new_gc() 
         gc.foreground = color
-        font = gtk.gdk.Font(self.font)
         layout = self.area.create_pango_layout(text)
         layout.set_font_description(pango.FontDescription(self.font))
         drawable.draw_layout(gc, x1, y1, layout)
