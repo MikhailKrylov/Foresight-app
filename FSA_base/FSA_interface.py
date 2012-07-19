@@ -24,7 +24,7 @@ class New_trend_dialog(object): #класс описывающий диалог 
     wTree = None
     def __init__(self, parent):
         self.parent = parent
-        self.wTree = gtk.glade.XML("new_trend_window.glade")
+        self.wTree = gtk.glade.XML("new_trend_window3.glade")
         self.window = self.wTree.get_widget("new_trend_dialog")
         self.cansel_btn = self.wTree.get_widget("Cansel_btn")
         def quit_(Emty_arg): #выход
@@ -64,10 +64,6 @@ class fsainterface(object):
         self.font = "Sans 19"
         self.font_sel_btn = self.wTree.get_widget("font_select_btn")
         self.new_btn = self.wTree.get_widget("new_trend_btn")
-        self.hpn =  self.wTree.get_widget("vpaned2")
-       # hpn.set_position(530)
-     #   wind = self.wTree.get_widget("MainWindow")
-       # wind.set_resizable(False)
         hruler1 = self.wTree.get_widget("hruler1")
         def motion_notify(ruler, event): #обработка движения мыши по зоне рисования
             return ruler.emit("motion_notify_event", event)
