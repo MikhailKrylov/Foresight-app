@@ -94,8 +94,13 @@ class fsainterface(object):
         self.wTree.get_widget("MainWindow").destroy()
     def rendring(self):
         self.area.window.clear()
+        hg = self.area.allocation.height
+        n = len(self.arrows)
+        y = 50
+        k = hg/(n+1)
         for ar in self.arrows:
-            ar.rendring()
+            ar.rendring(y)
+            y+=k
     def db_visual(self,coord): #обращение к интерфейсу базы данных
         type_string = "trend_name UTF8(100), comment UTF8(300),  sources TEXT(300), rsh TEXT(300), s_point INTEGER(32), f_point INTEGER(32)"
         trend_base = db_interface.base(type_string)

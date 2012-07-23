@@ -25,7 +25,8 @@ class arrow(object):
         self.y = 300
         self.text_rnd = True
         self.arrow_rnd = True
-    def rendring(self):
+    def rendring(self, y):
+        self.y = y
         x1 = self.f_point
         x2 = self.l_piont 
         drawable = self.area.window
