@@ -50,7 +50,7 @@ class New_trend_dialog(object): #класс описывающий диалог 
                 self.last_entry = self.f_year_text
         def scale_hide(obj_, event):
             self.years_scale.hide()
-        def set_data(obj_):                   
+        def set_data(obj_):           
             self.last_entry.set_text(str(self.years_scale.get_value())[:4])
         self.s_year_text.connect("focus-in-event",scale_show)
         self.f_year_text.connect("focus-in-event",scale_show)
@@ -149,11 +149,20 @@ class fsainterface(object):
         self.arrows = [] #все "стрелки"
         self.db_visual(0) #подключение БД к интерфейсу 
         def motion_notify(ruler, event): #обработка движения мыши по зоне рисования
+            for arrow in self.arrows:
+                if event.y in range(arrow.y-int(arrow.font.split(' ')[-1])-10, arrow.y+5):
+                    if event.x in range(arrow.f_point, arrow.l_piont):
+                        arrow.mouse_motion_on()
+                    else:
+                        arrow.mouse_motion_off()
+                else:
+                    arrow.mouse_motion_off()
+                   
             return ruler.emit("motion_notify_event", event)
+            
         self.area.connect_object("motion_notify_event", motion_notify, hruler1) 
         self.new_btn.connect_object("activate", self.new_trend_dialog_open, None) #обработка нажатия клавиши "Создать"
         def mouseclick(Empty_arg,event = None): #обработка щелчка мыши по зоне рисования
-            self.trend_base.verty_db()
             self.db_load_to_arrows()
 
         self.area.connect_object("button_press_event", mouseclick, None)  

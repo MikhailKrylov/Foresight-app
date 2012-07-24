@@ -38,7 +38,7 @@ class arrow(object):
         gc = drawable.new_gc() 
         #цвет задается в интервале от 0 до 65535
         gc.foreground = self.color
-        gc.line_width = abs(self.power)+1
+        gc.line_width = abs(self.power)+1  
         if self.power == 0: gc.line_width = 2
         if self.power > 0:
             drawable.draw_line(gc, x1, self.y, x2, self.y)
@@ -70,3 +70,18 @@ class arrow(object):
         layout.set_font_description(pango.FontDescription(self.font))
         font_size = int(self.font.split(" ")[-1])*2
         drawable.draw_layout(gc, x1, self.y-font_size, layout)
+    def selected(self):
+        pass
+    def mouse_motion_on(self): #Действия при наведении мыши
+        drawable = self.area.window
+        self.color = self.area.window.get_colormap().alloc(55535, 25535, 535)
+        gc = drawable.new_gc()
+        gc.foreground = self.color
+        drawable.draw_arc(gc, True, self.f_point-10, self.y-6, 12, 12, 0, 360*64)
+    def mouse_motion_off(self):
+        drawable = self.area.window
+        bgcolor = self.area.window.get_colormap().alloc(62194, 61937, 61680)
+        gc = drawable.new_gc()
+        gc.foreground = bgcolor
+        drawable.draw_arc(gc, True, self.f_point-10, self.y-6, 12, 12, 0, 360*64)
+        
