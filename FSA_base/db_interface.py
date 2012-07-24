@@ -22,12 +22,12 @@ class base: #главный класс для работы с базой дан�
     def print_db(self): #Вывод ДБ на экран. Для тестирования.
         try:
             self.cursor.execute('SELECT * FROM trends ')
-            strr = self.cursor.fetchall()  
+            trandlist = self.cursor.fetchall()  
 
             #print("\n".join(map(str, strr[0])))
-            strret =  "\n".join(map(lambda x: "\n" +"; ".join(map(str, x)), strr))
-            #return strret
-            print(strr)
+            strret =  "\n".join(map(lambda x: "\n" +"; ".join(map(str, x)), trandlist))
+            return trandlist
+            #print(strr)
         except:
             traceback.print_exc()
             print "Ошибка: Не возможно вывести базу данных"

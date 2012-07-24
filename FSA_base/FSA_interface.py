@@ -119,7 +119,7 @@ class fsainterface(object):
         self.area.connect_object("motion_notify_event", motion_notify, hruler1) 
         self.new_btn.connect_object("activate", self.new_trend_dialog_open, None) #обработка нажатия клавиши "Создать"
         def mouseclick(Empty_arg,event = None): #обработка щелчка мыши по зоне рисования
-            pass
+            self.db_load_to_arrows()
 
         self.area.connect_object("button_press_event", mouseclick, None)  
         self.font_sel_btn.connect("button_press_event", self.open_font_dialog)
@@ -145,7 +145,11 @@ class fsainterface(object):
         #trend_base.delete_db()
         self.trend_base.connect_db()
         self.trend_base.create(rebuilding_key)
-        
+    def db_load_to_arrows(self):
+        trlist = self.trend_base.print_db()
+        for trend in trlist:
+            self.arrows.append(arrow(self.area, self.font, trend[1], trend[2], trend[3], trend[4], trend[5], trend[6], trend[7]))
+        self.rendring()
         #trend_base.refresh()
     def db_add_data(self, data_string = "Name, comment, sourses, relationship, power, start_year, year_of_end"):
         self.trend_base.add_data(data_string)
