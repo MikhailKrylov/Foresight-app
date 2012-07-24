@@ -146,6 +146,7 @@ class fsainterface(object):
         self.font_sel_btn = self.wTree.get_widget("font_select_btn")
         self.new_btn = self.wTree.get_widget("new_trend_btn")
         hruler1 = self.wTree.get_widget("hruler1")
+        status_lbl = self.wTree.get_widget("status_lbl")
         self.arrows = [] #все "стрелки"
         self.db_visual(0) #подключение БД к интерфейсу 
         def motion_notify(ruler, event): #обработка движения мыши по зоне рисования
@@ -157,7 +158,8 @@ class fsainterface(object):
                         arrow.mouse_motion_off()
                 else:
                     arrow.mouse_motion_off()
-                   
+            status_lbl.set_text(str(ruler.get_range()[2])[:4]) 
+            #status_lbl.set_text(str(2055))       
             return ruler.emit("motion_notify_event", event)
             
         self.area.connect_object("motion_notify_event", motion_notify, hruler1) 
@@ -180,9 +182,22 @@ class fsainterface(object):
         n = len(self.arrows)
         y = 50
         k = hg/(n+1)
+        self.render_v_lines()
         for ar in self.arrows:
             ar.rendring(y)
             y+=k
+    def render_v_lines(self):
+        drawable = self.area.window
+        color = self.area.window.get_colormap().alloc(55535, 55535, 65535)
+        gc = drawable.new_gc()
+        gc.foreground = color
+        x = 0.
+        k = float(self.area.allocation.width)/22.
+        heigth = self.area.allocation.height
+        while x < self.area.allocation.width:
+              drawable.draw_line(gc, int(x), 0, int(x), heigth)
+              x+=k
+            
     def db_visual(self,rebuilding_key = 0): #обращение к интерфейсу базы данных
         type_string = "trend_name UTF8(100), comment UTF8(300),  sources TEXT(300), relationship TEXT(300), power INTEGER(2), s_point INTEGER(32), f_point INTEGER(32)"
         self.trend_base = db_interface.base(type_string)

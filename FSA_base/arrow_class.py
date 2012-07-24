@@ -51,7 +51,7 @@ class arrow(object):
         else:
             tx = x1+10
             n = 1
-            while x1 <= x2-30:
+            while x1 <= x2-10:
                 drawable.draw_arc(gc, False, x1, y, 20, 4, 0, n*360*32)
                 x1 +=22
                 n = -1*n
@@ -77,11 +77,11 @@ class arrow(object):
         self.color = self.area.window.get_colormap().alloc(55535, 25535, 535)
         gc = drawable.new_gc()
         gc.foreground = self.color
-        drawable.draw_arc(gc, True, self.f_point-10, self.y-6, 12, 12, 0, 360*64)
+        drawable.draw_arc(gc, True, self.f_point-14, self.y-6, 12, 12, 0, 360*64)
     def mouse_motion_off(self):
         drawable = self.area.window
         bgcolor = self.area.window.get_colormap().alloc(62194, 61937, 61680)
         gc = drawable.new_gc()
         gc.foreground = bgcolor
-        drawable.draw_arc(gc, True, self.f_point-10, self.y-6, 12, 12, 0, 360*64)
+        drawable.draw_arc(gc, True, self.f_point-14, self.y-6, 12, 12, 0, 360*64)
         
