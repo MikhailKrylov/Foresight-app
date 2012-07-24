@@ -25,10 +25,38 @@ class New_trend_dialog(object): #класс описывающий диалог 
     wTree = None
     def __init__(self, parent):
         self.parent = parent
+        self.power = 1 #Итоговая сила тренда
+        ##Подключение элементов формы
         self.wTree = gtk.glade.XML("new_trend_window3.glade")
         self.window = self.wTree.get_widget("new_trend_dialog")
         self.cansel_btn = self.wTree.get_widget("Cansel_btn")
         self.ok_btn = self.wTree.get_widget("Ok_btn")
+        self.sp_rbtn = self.wTree.get_widget("Spower_radio_btn")
+        self.up_rbtn = self.wTree.get_widget("Upower_radio_btn")
+        self.mp_rbtn = self.wTree.get_widget("Mpower_radio_btn")
+        self.fs_chk = self.wTree.get_widget("forse_chk")
+        def set_pwr(widget_ ,E_arg):
+            if E_arg == 0:
+                self.fs_chk.show()
+                self.power = 1
+                #rect = gtk.gdk.Get_rectangle(self.fs_chk)
+                #print self.fs_chk.get_allocation()
+                #rect = self.fs_chk.Rectangle(361,61,100,30)
+                #self.fs_chk.move_resize(rect)
+                #self.fs_chk.set_position(190, 12)
+            elif E_arg == 1:
+                self.fs_chk.hide()
+                self.power = 0
+            elif E_arg == 2:
+                self.fs_chk.show()
+                self.power = -1
+               # rect = gtk.gdk.get_rectangle(self.fs_chk)
+               # self.fs_chk.move_resize(rect)
+                #self.fs_chk.set_alignment(220,12)
+                
+        self.sp_rbtn.connect("toggled", set_pwr, 0)
+        self.up_rbtn.connect("toggled", set_pwr, 1)
+        self.mp_rbtn.connect("toggled", set_pwr, 2)
         def quit_(Emty_arg): #выход
             self.window.destroy()
         self.ok_btn.connect("clicked", self.ok_click) #обработка нажатия клавиши "Закрыть"
@@ -37,20 +65,21 @@ class New_trend_dialog(object): #класс описывающий диалог 
     def quit_(self):
         self.window.destroy()
     def ok_click(self, e_arg):
-        name = self.wTree.get_widget("name_str").get_text()
-        cm_b = self.wTree.get_widget("doc_text").get_buffer()
-        cm_si = cm_b.get_start_iter()
-        cm_ei = cm_b.get_end_iter()
-        cm = cm_b.get_text(cm_si, cm_ei)
-        srs_b = self.wTree.get_widget("srs_text").get_buffer()
-        srs_si = srs_b.get_start_iter()
-        srs_ei = srs_b.get_end_iter()
-        srs = srs_b.get_text(cm_si, cm_ei)
-        
-        sv = u"'[2,4], [3,-2]'"
-        f_p = self.wTree.get_widget("f_age_text").get_text()
-        l_p = self.wTree.get_widget("l_age_text").get_text()
-        self.parent.db_add_data(name +u', '+ cm +u', '+ srs+',' + sv+u',' + f_p+u',' + l_p)
+        name ="'"+ self.wTree.get_widget("name_str").get_text()+"'"
+        comment_b = self.wTree.get_widget("doc_text").get_buffer()
+        comment ="'"+ str(comment_b.get_text(comment_b.get_start_iter(), comment_b.get_end_iter()))+"'"
+        sourses_b = self.wTree.get_widget("srs_text").get_buffer()
+        sourses ="'"+ str(sourses_b.get_text(sourses_b.get_start_iter(), sourses_b.get_end_iter()))+"'"
+        if self.fs_chk.get_active():
+            self.power*=2
+        relationship = u"'[2,4], [3,-2]'"
+        s_year ="'"+ str(self.wTree.get_widget("s_year_text").get_text()) + "'"
+        f_year ="'"+ str(self.wTree.get_widget("f_year_text").get_text()) + "'"
+        power = "'"+str(self.power)+"'"
+        b_str = name +u', '+ comment +u', '+ sourses+u',' + relationship+u','+power+u',' + s_year+u',' + f_year
+       # print b_str
+        self.parent.db_add_data(b_str)
+        self.quit_()
     
 class Font_selection_window(object): #класс описывающий диалог выбора шрифта
     wTree = None
@@ -77,7 +106,6 @@ class fsainterface(object):
     wTree = None
     def __init__(self):
         self.wTree = gtk.glade.XML( "main_interface.glade" ) #подключение glade оболочки
-        self.point = (-1,-1)
         self.area = self.wTree.get_widget("MainDrawingArea")
         self.font = "Sans 19"
         #self.area.allocation.height
@@ -85,20 +113,13 @@ class fsainterface(object):
         self.new_btn = self.wTree.get_widget("new_trend_btn")
         hruler1 = self.wTree.get_widget("hruler1")
         self.arrows = [] #все "стрелки"
+        self.db_visual(0) #подключение БД к интерфейсу 
         def motion_notify(ruler, event): #обработка движения мыши по зоне рисования
             return ruler.emit("motion_notify_event", event)
         self.area.connect_object("motion_notify_event", motion_notify, hruler1) 
         self.new_btn.connect_object("activate", self.new_trend_dialog_open, None) #обработка нажатия клавиши "Создать"
         def mouseclick(Empty_arg,event = None): #обработка щелчка мыши по зоне рисования
-            coord = (int(event.x), int(event.y),0,0)
-            self.db_visual(coord)
-            if self.point == (-1, -1):
-                self.point = (int(event.x), int(event.y))
-            else:
-                coord = (self.point[0],self.point[1], int(event.x), int(event.y))
-                #self.drawing_line(coord)
-                self.arrows.append(arrow(self.area, self.font))
-                self.rendring()
+            pass
 
         self.area.connect_object("button_press_event", mouseclick, None)  
         self.font_sel_btn.connect("button_press_event", self.open_font_dialog)
@@ -118,23 +139,15 @@ class fsainterface(object):
         for ar in self.arrows:
             ar.rendring(y)
             y+=k
-    def db_visual(self,data_str): #обращение к интерфейсу базы данных
-        type_string = "trend_name UTF8(100), comment UTF8(300),  sources TEXT(300), rsh TEXT(300), s_point INTEGER(32), f_point INTEGER(32)"
+    def db_visual(self,rebuilding_key = 0): #обращение к интерфейсу базы данных
+        type_string = "trend_name UTF8(100), comment UTF8(300),  sources TEXT(300), relationship TEXT(300), power INTEGER(2), s_point INTEGER(32), f_point INTEGER(32)"
         self.trend_base = db_interface.base(type_string)
         #trend_base.delete_db()
         self.trend_base.connect_db()
-        self.trend_base.create(1)
+        self.trend_base.create(rebuilding_key)
+        
         #trend_base.refresh()
-        nm = u"'Основы инорматики'"
-        cm = u"'Тест тест'"
-        sa = u"'http://ya.ru'"
-        sv = u"'[2,4], [3,-2]'"
-        s_p = u"30000"
-        f_p = u"45555"
-        self.trend_base.add_data(nm +u', '+ cm +u', '+ sa+',' + sv+u',' + s_p+u',' + f_p)
-        drstr = self.trend_base.print_db()
-        #self.draw_text(coord, drstr)
-    def db_add_data(self, data_string):
+    def db_add_data(self, data_string = "Name, comment, sourses, relationship, power, start_year, year_of_end"):
         self.trend_base.add_data(data_string)
         
         

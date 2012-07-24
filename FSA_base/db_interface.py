@@ -6,7 +6,7 @@ import string
 import traceback
 
 class base: #главный класс для работы с базой данных 
-    def __init__(self, type_str, name = "fs_db.db"):
+    def __init__(self, type_str, name = "fs_db2.db"):
         self.name = name
         self.type_str = type_str
     def create(self, key = 0): #создание новой БД
@@ -15,7 +15,9 @@ class base: #главный класс для работы с базой дан�
                 self.refresh_db()
             self.cursor.execute('CREATE TABLE trends (id INTEGER PRIMARY KEY, '+self.type_str+')')
         except:
+            traceback.print_exc()
             print u"Ошибка: Невозможно создать базу."
+           # traceback.print_exc()
      
     def print_db(self): #Вывод ДБ на экран. Для тестирования.
         try:
@@ -24,17 +26,18 @@ class base: #главный класс для работы с базой дан�
 
             #print("\n".join(map(str, strr[0])))
             strret =  "\n".join(map(lambda x: "\n" +"; ".join(map(str, x)), strr))
-            return strret
-            #print(strr)
+            #return strret
+            print(strr)
         except:
             traceback.print_exc()
             print "Ошибка: Не возможно вывести базу данных"
     def add_data(self, data_str): #Добавление нового элемента в БД
         try:
             #self.cursor.execute('INSERT INTO trends (id, trend_name, comment, sources) VALUES(NULL, "qeddr", "rddt", "мама")')
-            self.cursor.execute('INSERT INTO trends (id, trend_name, comment, sources, rsh, s_point, f_point) VALUES(NULL,'+data_str+')')
+            self.cursor.execute('INSERT INTO trends (id, trend_name, comment, sources, relationship, power, s_point, f_point) VALUES(NULL,'+data_str+')')
             self.connect.commit()
         except:
+            traceback.print_exc()
             print u"Ошибка: Невозможно добавить данные в базу."
     def delete_db(self): #Удаление БД.
         try:
@@ -42,7 +45,7 @@ class base: #главный класс для работы с базой дан�
             os.remove(self.name)
         except:
             print u"Ошибка: Невозможно удалить базу данных."
-    def refresh_db(self): #Пересоздание БД. 
+    def refresh_db(self): #Пересоздание БД.
         self.delete_db()
         self.connect_db()
     def connect_db(self): #Соединение с созданной БД.
