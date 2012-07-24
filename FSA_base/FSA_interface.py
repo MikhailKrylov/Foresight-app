@@ -35,6 +35,28 @@ class New_trend_dialog(object): #класс описывающий диалог 
         self.up_rbtn = self.wTree.get_widget("Upower_radio_btn")
         self.mp_rbtn = self.wTree.get_widget("Mpower_radio_btn")
         self.fs_chk = self.wTree.get_widget("forse_chk")
+        self.palitra = self.wTree.get_widget("palitra_1")
+        self.s_year_text = self.wTree.get_widget("s_year_text")
+        self.f_year_text = self.wTree.get_widget("f_year_text")
+        self.years_scale = self.wTree.get_widget("years_scale")
+        random_color = self.parent.area.window.get_colormap().alloc(random.randint(0,65535), random.randint(0,65535), random.randint(0,65535))
+        self.palitra.set_current_color(random_color)
+        adj =  gtk.Adjustment(2000, 2000, 2055, 0, 0, 0)
+        self.last_entry = self.s_year_text
+        def scale_show(obj_, event):
+            if obj_ == self.s_year_text:
+                self.last_entry = self.s_year_text #Последнее выбранное поле текста
+            elif obj_ == self.f_year_text:
+                self.last_entry = self.f_year_text
+        def scale_hide(obj_, event):
+            self.years_scale.hide()
+        def set_data(obj_):                   
+            self.last_entry.set_text(str(self.years_scale.get_value())[:4])
+        self.s_year_text.connect("focus-in-event",scale_show)
+        self.f_year_text.connect("focus-in-event",scale_show)
+        self.years_scale.connect("focus-in-event", scale_show)
+        self.years_scale.connect_object("value_changed", set_data, self.last_entry)
+        
         def set_pwr(widget_ ,E_arg):
             if E_arg == 0:
                 self.fs_chk.show()
@@ -53,7 +75,7 @@ class New_trend_dialog(object): #класс описывающий диалог 
                # rect = gtk.gdk.get_rectangle(self.fs_chk)
                # self.fs_chk.move_resize(rect)
                 #self.fs_chk.set_alignment(220,12)
-                
+        self.sp_rbtn.connect("toggled", set_pwr, 0)        
         self.sp_rbtn.connect("toggled", set_pwr, 0)
         self.up_rbtn.connect("toggled", set_pwr, 1)
         self.mp_rbtn.connect("toggled", set_pwr, 2)
@@ -73,8 +95,8 @@ class New_trend_dialog(object): #класс описывающий диалог 
         if self.fs_chk.get_active():
             self.power*=2
         relationship = u"'[2,4], [3,-2]'"
-        s_year ="'"+ str(self.wTree.get_widget("s_year_text").get_text()) + "'"
-        f_year ="'"+ str(self.wTree.get_widget("f_year_text").get_text()) + "'"
+        s_year ="'"+ str(self.s_year_text.get_text()) + "'"
+        f_year ="'"+ str(self.f_year_text.get_text()) + "'"
         power = "'"+str(self.power)+"'"
         b_str = name +u', '+ comment +u', '+ sourses+u',' + relationship+u','+power+u',' + s_year+u',' + f_year
         self.parent.db_add_data(b_str)
@@ -83,11 +105,11 @@ class New_trend_dialog(object): #класс описывающий диалог 
 class Font_selection_window(object): #класс описывающий диалог выбора шрифта
     wTree = None
     def __init__(self, parent):
+        self.parent = parent #ссылка на "родителя"
         self.wTree = gtk.glade.XML( "Font_Selection_interface2.glade" ) #подключение glade оболочки
         self.window = self.wTree.get_widget("FontWindow")
         self.cansel_btn = self.wTree.get_widget("cancel_btn")
         self.ok_btn = self.wTree.get_widget("ok_btn")
-        self.parent = parent
         self.fontseldlg = self.wTree.get_widget("fontselection1")
         self.fontseldlg.set_font_name(parent.font)
         def quit_(Emty_arg): #выход

@@ -21,7 +21,6 @@ class arrow(object):
         self.sourses = sourses
         self.relationship = relationship
         self.power = power
-     
         self.f_time = start_year
         self.l_time = year_of_end
         sf = float(self.area.allocation.width)
