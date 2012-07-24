@@ -51,3 +51,8 @@ class base: #главный класс для работы с базой дан�
     def connect_db(self): #Соединение с созданной БД.
         self.connect = sqlite.connect(self.name)
         self.cursor = self.connect.cursor()
+    def verty_db(self):
+        self.cursor.execute('DELETE FROM trends WHERE length(trend_name)<1')
+        self.cursor.execute('DELETE FROM trends WHERE s_point<2000')
+        self.cursor.execute('DELETE FROM trends WHERE f_point<2000')
+        

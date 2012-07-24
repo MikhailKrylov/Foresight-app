@@ -7,6 +7,7 @@ Created on 16.07.2012
 
 #подключение библиотек
 import sys, random, pango, time
+from curses.ascii import NUL
 try:  
     import pygtk  
     pygtk.require("2.0")  
@@ -41,7 +42,6 @@ class New_trend_dialog(object): #класс описывающий диалог 
         self.years_scale = self.wTree.get_widget("years_scale")
         random_color = self.parent.area.window.get_colormap().alloc(random.randint(0,65535), random.randint(0,65535), random.randint(0,65535))
         self.palitra.set_current_color(random_color)
-        adj =  gtk.Adjustment(2000, 2000, 2055, 0, 0, 0)
         self.last_entry = self.s_year_text
         def scale_show(obj_, event):
             if obj_ == self.s_year_text:
@@ -88,20 +88,33 @@ class New_trend_dialog(object): #класс описывающий диалог 
         self.window.destroy()
     def ok_click(self, e_arg):
         name ="'"+ self.wTree.get_widget("name_str").get_text()+"'"
-        comment_b = self.wTree.get_widget("doc_text").get_buffer()
-        comment ="'"+ str(comment_b.get_text(comment_b.get_start_iter(), comment_b.get_end_iter()))+"'"
-        sourses_b = self.wTree.get_widget("srs_text").get_buffer()
-        sourses ="'"+ str(sourses_b.get_text(sourses_b.get_start_iter(), sourses_b.get_end_iter()))+"'"
-        if self.fs_chk.get_active():
-            self.power*=2
-        relationship = u"'[2,4], [3,-2]'"
-        s_year ="'"+ str(self.s_year_text.get_text()) + "'"
-        f_year ="'"+ str(self.f_year_text.get_text()) + "'"
-        power = "'"+str(self.power)+"'"
-        b_str = name +u', '+ comment +u', '+ sourses+u',' + relationship+u','+power+u',' + s_year+u',' + f_year
-        self.parent.db_add_data(b_str)
-        self.quit_()
-    
+        
+        if len(name)<3:
+            print "Ошибка! Введите название!"
+        else:
+            comment_b = self.wTree.get_widget("doc_text").get_buffer()
+            comment ="'"+ str(comment_b.get_text(comment_b.get_start_iter(), comment_b.get_end_iter()))+"'"
+            sourses_b = self.wTree.get_widget("srs_text").get_buffer()
+            sourses ="'"+ str(sourses_b.get_text(sourses_b.get_start_iter(), sourses_b.get_end_iter()))+"'"
+            if self.fs_chk.get_active():
+                self.power*=2
+            relationship = u"'[2,4], [3,-2]'"
+            try:
+                int(self.s_year_text.get_text())
+                int(self.f_year_text.get_text())
+            except:
+                print "Ошибка: введите корректные даты!"
+                return 0
+            if  int(self.s_year_text.get_text()) < int(self.f_year_text.get_text()) and int(self.s_year_text.get_text()) in range(2000,2055) and int(self.f_year_text.get_text()) in range(2000,2055): 
+                s_year ="'"+ str(self.s_year_text.get_text()) + "'"
+                f_year ="'"+ str(self.f_year_text.get_text()) + "'"
+                power = "'"+str(self.power)+"'"
+                b_str = name +u', '+ comment +u', '+ sourses+u',' + relationship+u','+power+u',' + s_year+u',' + f_year
+                self.parent.db_add_data(b_str)
+                print "OK"
+                self.quit_()
+            else:
+                print "Ошибка: введите корректные даты!"
 class Font_selection_window(object): #класс описывающий диалог выбора шрифта
     wTree = None
     def __init__(self, parent):
@@ -140,6 +153,7 @@ class fsainterface(object):
         self.area.connect_object("motion_notify_event", motion_notify, hruler1) 
         self.new_btn.connect_object("activate", self.new_trend_dialog_open, None) #обработка нажатия клавиши "Создать"
         def mouseclick(Empty_arg,event = None): #обработка щелчка мыши по зоне рисования
+            self.trend_base.verty_db()
             self.db_load_to_arrows()
 
         self.area.connect_object("button_press_event", mouseclick, None)  

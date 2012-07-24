@@ -38,7 +38,8 @@ class arrow(object):
         gc = drawable.new_gc() 
         #цвет задается в интервале от 0 до 65535
         gc.foreground = self.color
-        gc.line_width = abs(self.power)
+        gc.line_width = abs(self.power)+1
+        if self.power == 0: gc.line_width = 2
         if self.power > 0:
             drawable.draw_line(gc, x1, self.y, x2, self.y)
         elif self.power <0:
@@ -58,8 +59,8 @@ class arrow(object):
         if self.text_rnd == True:
             self.render_text()
         if self.arrow_rnd == True:
-            drawable.draw_line(gc, x2-abs(self.power)*5, self.y-abs(self.power)*5, x2, self.y+1)
-            drawable.draw_line(gc, x2-abs(self.power)*5, self.y+abs(self.power)*5, x2, self.y-1)
+            drawable.draw_line(gc, x2-abs(self.power+3)*2, self.y-abs(self.power+3)*2, x2, self.y+1)
+            drawable.draw_line(gc, x2-abs(self.power+3)*2, self.y+abs(self.power+3)*2, x2, self.y-1)
     def render_text(self):
         x1 = self.f_point
         drawable = self.area.window
