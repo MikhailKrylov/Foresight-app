@@ -48,6 +48,14 @@ class arrow(object):
                 drawable.draw_line(gc, x1, self.y, tx, self.y)
                 x1 = tx+abs(self.power)*5
                 tx = x1+abs(self.power)*5
+        else:
+            tx = x1+10
+            n = 1
+            while x1 <= x2-30:
+                drawable.draw_arc(gc, False, x1, y, 20, 4, 0, n*360*32)
+                x1 +=22
+                n = -1*n
+            
         if self.text_rnd == True:
             self.render_text()
         if self.arrow_rnd == True:
@@ -60,5 +68,5 @@ class arrow(object):
         gc.foreground = self.color
         layout = self.area.create_pango_layout(self.name)
         layout.set_font_description(pango.FontDescription(self.font))
-        font_size = int(self.font.split(" ")[1])*2
+        font_size = int(self.font.split(" ")[-1])*2
         drawable.draw_layout(gc, x1, self.y-font_size, layout)

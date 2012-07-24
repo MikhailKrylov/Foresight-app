@@ -77,7 +77,6 @@ class New_trend_dialog(object): #класс описывающий диалог 
         f_year ="'"+ str(self.wTree.get_widget("f_year_text").get_text()) + "'"
         power = "'"+str(self.power)+"'"
         b_str = name +u', '+ comment +u', '+ sourses+u',' + relationship+u','+power+u',' + s_year+u',' + f_year
-       # print b_str
         self.parent.db_add_data(b_str)
         self.quit_()
     
@@ -90,6 +89,7 @@ class Font_selection_window(object): #класс описывающий диал
         self.ok_btn = self.wTree.get_widget("ok_btn")
         self.parent = parent
         self.fontseldlg = self.wTree.get_widget("fontselection1")
+        self.fontseldlg.set_font_name(parent.font)
         def quit_(Emty_arg): #выход
             self.window.destroy()
         self.cansel_btn.connect_object("clicked", quit_, None) #обработка нажатия клавиши "Закрыть"
@@ -108,7 +108,6 @@ class fsainterface(object):
         self.wTree = gtk.glade.XML( "main_interface.glade" ) #подключение glade оболочки
         self.area = self.wTree.get_widget("MainDrawingArea")
         self.font = "Sans 19"
-        #self.area.allocation.height
         self.font_sel_btn = self.wTree.get_widget("font_select_btn")
         self.new_btn = self.wTree.get_widget("new_trend_btn")
         hruler1 = self.wTree.get_widget("hruler1")
