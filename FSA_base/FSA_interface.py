@@ -161,8 +161,8 @@ class Trend_dialog(object): #класс описывающий диалог вн
     def arrow_from_data(self, comment, sourses, f_year, s_year, relationship, color):                        
         self.Arrow.comment = comment
         self.Arrow.sourses = sourses
-        self.Arrow.f_time = f_year
-        self.Arrow.s_time = s_year
+        self.Arrow.f_time = int(f_year)
+        self.Arrow.s_time = int(s_year)
         self.Arrow.relationship = relationship
         self.Arrow.color = self.parent.area.window.get_colormap().alloc(color)
 
@@ -199,6 +199,7 @@ class fsainterface(object):
         self.new_btn = self.wTree.get_widget("new_trend_btn")
         hruler1 = self.wTree.get_widget("hruler1")
         status_lbl = self.wTree.get_widget("status_lbl")
+        self.load_btn = self.wTree.get_widget("normal_trend")
         self.arrows = [] #все "стрелки"
         self.db_visual(0) #подключение БД к интерфейсу 
         def motion_notify(ruler, event): #обработка движения мыши по зоне рисования
@@ -219,9 +220,9 @@ class fsainterface(object):
                 if arrow.get_mouse_motion:
                     edit_dlg = Trend_dialog(self, arrow, True)
                     break
-            self.db_load_to_arrows()
 
-        self.area.connect_object("button_press_event", mouseclick, None)  
+        self.area.connect_object("button_press_event", mouseclick, None)
+        self.load_btn.connect("clicked", self.db_load_to_arrows, None)  
         self.font_sel_btn.connect("button_press_event", self.open_font_dialog)
         gtk.main()
     def open_font_dialog(self, widget, Emty_arg):#вызов диалога выбора шрифта
@@ -258,7 +259,7 @@ class fsainterface(object):
         #trend_base.delete_db()
         self.trend_base.connect_db()
         self.trend_base.create(rebuilding_key)
-    def db_load_to_arrows(self):
+    def db_load_to_arrows(self, e1 = None, e2 = None):
         trlist = self.trend_base.print_db()
         for trend in trlist:
             self.arrows.append(arrow(self.area, self.font, trend[1], trend[2], trend[3], trend[4], trend[5], trend[6], trend[7]))

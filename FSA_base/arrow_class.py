@@ -24,14 +24,16 @@ class arrow(object):
         self.power = power
         self.s_time = start_year
         self.f_time = year_of_end
-        sf = float(self.area.allocation.width)
-        st = float(self.s_time) - 2000.
-        self.s_point = int(sf/55. * (st))
+        #sf = float(self.area.allocation.width)
+        #st = float(self.s_time) - 2000.
+        self.s_point = int(float(self.area.allocation.width)/55. * (float(self.s_time) - 2000.))
         self.f_point = int(float(self.area.allocation.width)/55. * (self.f_time - 2000.))
         self.text_rnd = True
         self.arrow_rnd = True
         self.get_mouse_motion = False
     def rendring(self, y):
+        self.s_point = int(float(self.area.allocation.width)/55.0 *(float(self.s_time) - 2000.))
+        self.f_point = int(float(self.area.allocation.width)/55.0 * (self.f_time - 2000.))
         self.y = y
         x1 = self.s_point
         x2 = self.f_point 
