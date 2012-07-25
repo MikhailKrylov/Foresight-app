@@ -13,27 +13,32 @@ class base: #главный класс для работы с базой дан�
         try:
             if key == 1:
                 self.refresh_db()
+            #таблица трендов:
             self.cursor.execute('CREATE TABLE trends (id INTEGER PRIMARY KEY, '+self.type_str+')')
+            #таблица отношений:
+            self.cursor.execute('CREATE TABLE relationships (id INTEGER PRIMARY KEY, base_trend TEXT(100), second_trend TEXT(100), comment TEXT(300), type INTEGER(2))')
         except:
             traceback.print_exc()
             print u"Ошибка: Невозможно создать базу."
-           # traceback.print_exc()
-     
     def print_db(self): #Вывод ДБ на экран. Для тестирования.
         try:
             self.cursor.execute('SELECT * FROM trends ')
             trandlist = self.cursor.fetchall()  
-
-            #print("\n".join(map(str, strr[0])))
             strret =  "\n".join(map(lambda x: "\n" +"; ".join(map(str, x)), trandlist))
             return trandlist
             #print(strr)
         except:
             traceback.print_exc()
             print "Ошибка: Не возможно вывести базу данных"
-    def add_data(self, data_str): #Добавление нового элемента в БД
+    def add_rsh(self, data_str):#добавление нового элемента в таблицу отношений
         try:
-            #self.cursor.execute('INSERT INTO trends (id, trend_name, comment, sources) VALUES(NULL, "qeddr", "rddt", "мама")')
+            self.cursor.execute('INSERT INTO relationships (id, base_trend, second_trend, comment, type) VALUES(NULL,'+data_str+')')
+            self.connect.commit()
+        except:
+            traceback.print_exc()
+            print u"Ошибка: Невозможно добавить данные в базу."
+    def add_data(self, data_str): #Добавление нового элемента в таблицу трендов
+        try:
             self.cursor.execute('INSERT INTO trends (id, trend_name, comment, sources, relationship, power, s_point, f_point) VALUES(NULL,'+data_str+')')
             self.connect.commit()
         except:

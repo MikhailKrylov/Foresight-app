@@ -21,18 +21,19 @@ class arrow(object):
         self.sourses = sourses
         self.relationship = relationship
         self.power = power
-        self.f_time = start_year
-        self.l_time = year_of_end
+        self.s_time = start_year
+        self.f_time = year_of_end
         sf = float(self.area.allocation.width)
-        st = float(self.f_time) - 2000.
-        self.f_point = int(sf/55. * (st))
-        self.l_piont = int(float(self.area.allocation.width)/55. * (self.l_time - 2000.))
+        st = float(self.s_time) - 2000.
+        self.s_point = int(sf/55. * (st))
+        self.f_point = int(float(self.area.allocation.width)/55. * (self.f_time - 2000.))
         self.text_rnd = True
         self.arrow_rnd = True
+        self.get_mouse_motion = False
     def rendring(self, y):
         self.y = y
-        x1 = self.f_point
-        x2 = self.l_piont 
+        x1 = self.s_point
+        x2 = self.f_point 
         drawable = self.area.window
         #gc Graphics Context, т.е. параметры.
         gc = drawable.new_gc() 
@@ -62,7 +63,7 @@ class arrow(object):
             drawable.draw_line(gc, x2-abs(self.power+3)*2, self.y-abs(self.power+3)*2, x2, self.y+1)
             drawable.draw_line(gc, x2-abs(self.power+3)*2, self.y+abs(self.power+3)*2, x2, self.y-1)
     def render_text(self):
-        x1 = self.f_point
+        x1 = self.s_point
         drawable = self.area.window
         gc = drawable.new_gc() 
         gc.foreground = self.color
@@ -74,14 +75,15 @@ class arrow(object):
         pass
     def mouse_motion_on(self): #Действия при наведении мыши
         drawable = self.area.window
-        self.color = self.area.window.get_colormap().alloc(55535, 25535, 535)
+        color = self.area.window.get_colormap().alloc(55535, 25535, 535)
         gc = drawable.new_gc()
-        gc.foreground = self.color
-        drawable.draw_arc(gc, True, self.f_point-14, self.y-6, 12, 12, 0, 360*64)
+        gc.foreground = color
+        drawable.draw_arc(gc, True, self.s_point-14, self.y-6, 12, 12, 0, 360*64)
+        self.get_mouse_motion = True
     def mouse_motion_off(self):
         drawable = self.area.window
         bgcolor = self.area.window.get_colormap().alloc(62194, 61937, 61680)
         gc = drawable.new_gc()
         gc.foreground = bgcolor
-        drawable.draw_arc(gc, True, self.f_point-14, self.y-6, 12, 12, 0, 360*64)
-        
+        drawable.draw_arc(gc, True, self.s_point-14, self.y-6, 12, 12, 0, 360*64)
+        self.get_mouse_motion = False

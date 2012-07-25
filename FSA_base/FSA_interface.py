@@ -21,13 +21,14 @@ except:
     sys.exit(1)
 import db_interface #подключение модуля работы с базой данных
 from arrow_class import arrow #Подключение класса "стрелки"
-#главный класс для работы с графическим интерфейсом
-class New_trend_dialog(object): #класс описывающий диалог внесения в базу нового тренда или редактирования существующего
+#№главный класс для работы с графическим интерфейсом
+class Trend_dialog(object): #класс описывающий диалог внесения в базу нового тренда или редактирования существующего
     wTree = None
-    def __init__(self, parent):
+    def __init__(self, parent, arrow = None, Fill = False):
         self.parent = parent
         self.power = 1 #Итоговая сила тренда
         ##Подключение элементов формы
+        self.arrow = arrow
         self.wTree = gtk.glade.XML("new_trend_window3.glade")
         self.window = self.wTree.get_widget("new_trend_dialog")
         self.cansel_btn = self.wTree.get_widget("Cansel_btn")
@@ -41,6 +42,9 @@ class New_trend_dialog(object): #класс описывающий диалог 
         self.s_year_text = self.wTree.get_widget("s_year_text")
         self.f_year_text = self.wTree.get_widget("f_year_text")
         self.years_scale = self.wTree.get_widget("years_scale")
+        self.doc_text = self.wTree.get_widget("doc_text")
+        self.srs_text = self.wTree.get_widget("srs_text")
+        self.name_str = self.wTree.get_widget("name_str")
         color_sel_chbutn = self.wTree.get_widget("color_selection_on")
         
         random_color = self.parent.area.window.get_colormap().alloc(random.randint(0,65535), random.randint(0,65535), random.randint(0,65535))
@@ -86,29 +90,49 @@ class New_trend_dialog(object): #класс описывающий диалог 
                 self.fs_chk2.set_active(act)
                 self.fs_chk.set_sensitive(0)
                 self.fs_chk.hide()
-                self.power = -1
-               # rect = gtk.gdk.get_rectangle(self.fs_chk)
-               # self.fs_chk.move_resize(rect)
-                #self.fs_chk.set_alignment(220,12)      
+                self.power = -1     
         self.sp_rbtn.connect("toggled", set_pwr, 0)
         self.up_rbtn.connect("toggled", set_pwr, 1)
         self.mp_rbtn.connect("toggled", set_pwr, 2)
-        def quit_(Emty_arg): #выход
-            self.window.destroy()
-        self.ok_btn.connect("clicked", self.ok_click) #обработка нажатия клавиши "Закрыть"
-        self.cansel_btn.connect("clicked", quit_) #обработка нажатия клавиши "ок"
+        self.ok_btn.connect("clicked", self.ok_click) #обработка нажатия клавиши "Ок"
+        self.cansel_btn.connect("clicked", self.quit_) #обработка нажатия клавиши "Закрыть"
+        if Fill:
+            self.to_fill()
         gtk.main()
-    def quit_(self):
+    def to_fill(self):
+        trend = self.arrow
+        if trend.power>0:
+            if trend.power == 2:
+                self.fs_chk.set_active(1)
+            self.sp_rbtn.set_active(1)
+        elif trend.power<0:
+            if trend.power == -2:
+                self.fs_chk2.set_active(1)
+            self.mp_rbtn.set_active(1)
+        else:
+            self.up_rbtn.set_active(1)
+        self.name_str.set_text(trend.name)
+        self.name_str.set_sensitive(0)
+        comment_buffer = gtk.TextBuffer(None)
+        comment_buffer.set_text(trend.comment)
+        self.doc_text.set_buffer(comment_buffer)
+        sourses_buffer = gtk.TextBuffer(None)
+        sourses_buffer.set_text(trend.sourses)
+        self.srs_text.set_buffer(sourses_buffer)
+        self.s_year_text.set_text(str(trend.s_time))
+        self.f_year_text.set_text(str(trend.s_time))
+        self.palitra.set_current_color(trend.color)
+    def quit_(self, Ea = None, Ba = None):
         self.window.destroy()
     def ok_click(self, e_arg):
-        name ="'"+ self.wTree.get_widget("name_str").get_text()+"'"
+        name ="'"+ self.name_str.get_text()+"'"
         
         if len(name)<3:
             print "Ошибка! Введите название!"
         else:
-            comment_b = self.wTree.get_widget("doc_text").get_buffer()
+            comment_b = self.doc_text.get_buffer()
             comment ="'"+ str(comment_b.get_text(comment_b.get_start_iter(), comment_b.get_end_iter()))+"'"
-            sourses_b = self.wTree.get_widget("srs_text").get_buffer()
+            sourses_b = self.srs_text.get_buffer()
             sourses ="'"+ str(sourses_b.get_text(sourses_b.get_start_iter(), sourses_b.get_end_iter()))+"'"
             if self.fs_chk.get_active() or self.fs_chk2.get_active():
                 self.power*=2
@@ -129,6 +153,8 @@ class New_trend_dialog(object): #класс описывающий диалог 
                 self.quit_()
             else:
                 print "Ошибка: введите корректные даты!"
+
+            
 class Font_selection_window(object): #класс описывающий диалог выбора шрифта
     wTree = None
     def __init__(self, parent):
@@ -154,6 +180,7 @@ class Font_selection_window(object): #класс описывающий диал
 class fsainterface(object):
     wTree = None
     def __init__(self):
+       
         self.wTree = gtk.glade.XML( "main_interface.glade" ) #подключение glade оболочки
         self.area = self.wTree.get_widget("MainDrawingArea")
         self.font = "Sans 19"
@@ -166,19 +193,21 @@ class fsainterface(object):
         def motion_notify(ruler, event): #обработка движения мыши по зоне рисования
             for arrow in self.arrows:
                 if event.y in range(arrow.y-int(arrow.font.split(' ')[-1])-10, arrow.y+5):
-                    if event.x in range(arrow.f_point, arrow.l_piont):
+                    if event.x in range(arrow.s_point, arrow.f_point):
                         arrow.mouse_motion_on()
                     else:
                         arrow.mouse_motion_off()
                 else:
                     arrow.mouse_motion_off()
-            status_lbl.set_text(str(ruler.get_range()[2])[:4]) 
-            #status_lbl.set_text(str(2055))       
+            status_lbl.set_text(str(ruler.get_range()[2])[:4])   
             return ruler.emit("motion_notify_event", event)
-            
         self.area.connect_object("motion_notify_event", motion_notify, hruler1) 
         self.new_btn.connect_object("activate", self.new_trend_dialog_open, None) #обработка нажатия клавиши "Создать"
         def mouseclick(Empty_arg,event = None): #обработка щелчка мыши по зоне рисования
+            for arrow in self.arrows:
+                if arrow.get_mouse_motion:
+                    edit_dlg = Trend_dialog(self, arrow, True)
+                    break
             self.db_load_to_arrows()
 
         self.area.connect_object("button_press_event", mouseclick, None)  
@@ -187,7 +216,7 @@ class fsainterface(object):
     def open_font_dialog(self, widget, Emty_arg):#вызов диалога выбора шрифта
         fsw = Font_selection_window(self) 
     def new_trend_dialog_open(self,Emty_arg): #Вызов диалога "новый тренд"
-        ntw = New_trend_dialog(self)
+        ntw = Trend_dialog(self)
     def quit(self, widget): #выход (уничтожение окна)
         self.wTree.get_widget("MainWindow").destroy()
     def rendring(self):
