@@ -7,7 +7,7 @@ Created on 16.07.2012
 
 #подключение библиотек
 import sys, random, pango, time
-from curses.ascii import NUL
+#from curses.ascii import NUL
 try:  
     import pygtk  
     pygtk.require("2.0")  
@@ -24,11 +24,12 @@ from arrow_class import arrow #Подключение класса "стрелк
 #№главный класс для работы с графическим интерфейсом
 class Trend_dialog(object): #класс описывающий диалог внесения в базу нового тренда или редактирования существующего
     wTree = None
-    def __init__(self, parent, arrow = None, Fill = False):
+    def __init__(self, parent, arrow_ = None, Fill = False):
         self.parent = parent
+        self.Fill = Fill #активно ли замещение текущий строки.
         self.power = 1 #Итоговая сила тренда
         ##Подключение элементов формы
-        self.arrow = arrow
+        self.Arrow = arrow_
         self.wTree = gtk.glade.XML("new_trend_window3.glade")
         self.window = self.wTree.get_widget("new_trend_dialog")
         self.cansel_btn = self.wTree.get_widget("Cansel_btn")
@@ -100,7 +101,7 @@ class Trend_dialog(object): #класс описывающий диалог вн
             self.to_fill()
         gtk.main()
     def to_fill(self):
-        trend = self.arrow
+        trend = self.Arrow
         if trend.power>0:
             if trend.power == 2:
                 self.fs_chk.set_active(1)
@@ -120,7 +121,7 @@ class Trend_dialog(object): #класс описывающий диалог вн
         sourses_buffer.set_text(trend.sourses)
         self.srs_text.set_buffer(sourses_buffer)
         self.s_year_text.set_text(str(trend.s_time))
-        self.f_year_text.set_text(str(trend.s_time))
+        self.f_year_text.set_text(str(trend.f_time))
         self.palitra.set_current_color(trend.color)
     def quit_(self, Ea = None, Ba = None):
         self.window.destroy()
@@ -131,9 +132,9 @@ class Trend_dialog(object): #класс описывающий диалог вн
             print "Ошибка! Введите название!"
         else:
             comment_b = self.doc_text.get_buffer()
-            comment ="'"+ str(comment_b.get_text(comment_b.get_start_iter(), comment_b.get_end_iter()))+"'"
+            comment =str(comment_b.get_text(comment_b.get_start_iter(), comment_b.get_end_iter()))
             sourses_b = self.srs_text.get_buffer()
-            sourses ="'"+ str(sourses_b.get_text(sourses_b.get_start_iter(), sourses_b.get_end_iter()))+"'"
+            sourses =str(sourses_b.get_text(sourses_b.get_start_iter(), sourses_b.get_end_iter()))
             if self.fs_chk.get_active() or self.fs_chk2.get_active():
                 self.power*=2
             relationship = u"'[2,4], [3,-2]'"
@@ -144,17 +145,27 @@ class Trend_dialog(object): #класс описывающий диалог вн
                 print "Ошибка: введите корректные даты!"
                 return 0
             if  int(self.s_year_text.get_text()) < int(self.f_year_text.get_text()) and int(self.s_year_text.get_text()) in range(2000,2055) and int(self.f_year_text.get_text()) in range(2000,2055): 
-                s_year ="'"+ str(self.s_year_text.get_text()) + "'"
-                f_year ="'"+ str(self.f_year_text.get_text()) + "'"
-                power = "'"+str(self.power)+"'"
-                b_str = name +u', '+ comment +u', '+ sourses+u',' + relationship+u','+power+u',' + s_year+u',' + f_year
-                self.parent.db_add_data(b_str)
-                print "OK"
+                s_year =str(self.s_year_text.get_text())
+                f_year =str(self.f_year_text.get_text())
+                power = str(self.power)
+                color = self.palitra.get_current_color()
+                if self.Fill:
+                    self.arrow_from_data(comment, sourses, f_year, s_year, relationship, color)
+                else:
+                    self.Arrow = arrow(self.parent.area, self.parent.font, name, comment, sourses, relationship, power, s_year, f_year)
+                    self.parent.arrows.append(Arrow)
+                self.parent.rendring()
                 self.quit_()
             else:
                 print "Ошибка: введите корректные даты!"
+    def arrow_from_data(self, comment, sourses, f_year, s_year, relationship, color):                        
+        self.Arrow.comment = comment
+        self.Arrow.sourses = sourses
+        self.Arrow.f_time = f_year
+        self.Arrow.s_time = s_year
+        self.Arrow.relationship = relationship
+        self.Arrow.color = self.parent.area.window.get_colormap().alloc(color)
 
-            
 class Font_selection_window(object): #класс описывающий диалог выбора шрифта
     wTree = None
     def __init__(self, parent):
@@ -255,6 +266,31 @@ class fsainterface(object):
         #trend_base.refresh()
     def db_add_data(self, data_string = "Name, comment, sourses, relationship, power, start_year, year_of_end"):
         self.trend_base.add_data(data_string)
-        
-        
+    def db_update_from_arrows(self):
+        for arrow_ in self.arrows:
+            name ="'"+ arrow_.name+"'"
+            sourses ="'"+ str(arrow_.sourses)+"'"
+            relationship = "'" + arrow_.relationship + "'"
+            s_year ="'"+ str(arrow_.s_time) + "'"
+            f_year ="'"+ str(arrow_.f_time) + "'"
+            power = "'"+str(arrow_.power)+"'"
+            b_str = name +u', '+ comment +u', '+ sourses+u',' + relationship+u','+power+u',' + s_year+u',' + f_year
+            self.db_add_data(b_str)
+            '''
+            if self.Fill:
+               #u_name = "trend_name"
+               u_comment =  "comment"
+               u_sources =  "sources" 
+               u_rsh = "relationship"
+               u_power = "power"
+               u_syear =  "s_point" 
+               u_fyear =  "f_point"
+               self.parent.trend_base.update_str(u_comment, comment, name)
+               self.parent.trend_base.update_str(u_sources, sourses, name)
+               self.parent.trend_base.update_str(u_rsh, relationship, name)
+               self.parent.trend_base.update_str(u_power, power, name)
+               self.parent.trend_base.update_str(u_syear, s_year, name)
+               self.parent.trend_base.update_str(u_fyear, f_year, name)
+           ''' 
+            
 aa = fsainterface()
