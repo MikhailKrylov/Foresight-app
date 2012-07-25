@@ -72,7 +72,7 @@
                   </widget>
                   <packing>
                     <property name="resize">False</property>
-                    <property name="shrink">True</property>
+                    <property name="shrink">False</property>
                   </packing>
                 </child>
                 <child>
@@ -116,6 +116,7 @@
                     <property name="height_request">220</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="wrap_mode">word-char</property>
                   </widget>
                   <packing>
                     <property name="resize">False</property>
@@ -327,6 +328,21 @@
                             <property name="y">156</property>
                           </packing>
                         </child>
+                        <child>
+                          <widget class="GtkCheckButton" id="forse_chk1">
+                            <property name="label" translatable="yes">Сильная</property>
+                            <property name="width_request">100</property>
+                            <property name="height_request">30</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">False</property>
+                            <property name="use_action_appearance">False</property>
+                            <property name="draw_indicator">True</property>
+                          </widget>
+                          <packing>
+                            <property name="x">190</property>
+                            <property name="y">93</property>
+                          </packing>
+                        </child>
                       </widget>
                       <packing>
                         <property name="resize">False</property>
@@ -339,7 +355,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <child>
-                          <widget class="GtkCheckButton" id="checkbutton1">
+                          <widget class="GtkCheckButton" id="color_selection_on">
                             <property name="label" translatable="yes">Задать цвет:</property>
                             <property name="width_request">120</property>
                             <property name="height_request">30</property>
@@ -348,6 +364,7 @@
                             <property name="receives_default">False</property>
                             <property name="use_action_appearance">False</property>
                             <property name="relief">none</property>
+                            <property name="active">True</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>

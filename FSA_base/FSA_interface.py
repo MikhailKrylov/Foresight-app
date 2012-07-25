@@ -36,13 +36,22 @@ class New_trend_dialog(object): #класс описывающий диалог 
         self.up_rbtn = self.wTree.get_widget("Upower_radio_btn")
         self.mp_rbtn = self.wTree.get_widget("Mpower_radio_btn")
         self.fs_chk = self.wTree.get_widget("forse_chk")
+        self.fs_chk2 = self.wTree.get_widget("forse_chk1")
         self.palitra = self.wTree.get_widget("palitra_1")
         self.s_year_text = self.wTree.get_widget("s_year_text")
         self.f_year_text = self.wTree.get_widget("f_year_text")
         self.years_scale = self.wTree.get_widget("years_scale")
+        color_sel_chbutn = self.wTree.get_widget("color_selection_on")
+        
         random_color = self.parent.area.window.get_colormap().alloc(random.randint(0,65535), random.randint(0,65535), random.randint(0,65535))
         self.palitra.set_current_color(random_color)
         self.last_entry = self.s_year_text
+        def hide_show(obj, active):
+            if active():    self.palitra.show()
+            else:   self.palitra.hide()
+                
+        # print event
+        color_sel_chbutn.connect("toggled", hide_show, color_sel_chbutn.get_active)
         def scale_show(obj_, event):
             if obj_ == self.s_year_text:
                 self.last_entry = self.s_year_text #Последнее выбранное поле текста
@@ -58,24 +67,29 @@ class New_trend_dialog(object): #класс описывающий диалог 
         self.years_scale.connect_object("value_changed", set_data, self.last_entry)
         
         def set_pwr(widget_ ,E_arg):
-            if E_arg == 0:
+            if E_arg == 0 and widget_.get_active(): #Возрастающая
+                act = int(self.fs_chk2.get_active())
                 self.fs_chk.show()
+                self.fs_chk.set_sensitive(1)
+                self.fs_chk.set_active(act)
+                self.fs_chk2.set_sensitive(0)
+                self.fs_chk2.hide()
                 self.power = 1
-                #rect = gtk.gdk.Get_rectangle(self.fs_chk)
-                #print self.fs_chk.get_allocation()
-                #rect = self.fs_chk.Rectangle(361,61,100,30)
-                #self.fs_chk.move_resize(rect)
-                #self.fs_chk.set_position(190, 12)
-            elif E_arg == 1:
+            elif E_arg == 1: #Неопределенная
                 self.fs_chk.hide()
+                self.fs_chk2.hide()
                 self.power = 0
-            elif E_arg == 2:
-                self.fs_chk.show()
+            elif E_arg == 2 and widget_.get_active(): #убывающая
+                act = int(self.fs_chk.get_active())
+                self.fs_chk2.show()
+                self.fs_chk2.set_sensitive(1)
+                self.fs_chk2.set_active(act)
+                self.fs_chk.set_sensitive(0)
+                self.fs_chk.hide()
                 self.power = -1
                # rect = gtk.gdk.get_rectangle(self.fs_chk)
                # self.fs_chk.move_resize(rect)
-                #self.fs_chk.set_alignment(220,12)
-        self.sp_rbtn.connect("toggled", set_pwr, 0)        
+                #self.fs_chk.set_alignment(220,12)      
         self.sp_rbtn.connect("toggled", set_pwr, 0)
         self.up_rbtn.connect("toggled", set_pwr, 1)
         self.mp_rbtn.connect("toggled", set_pwr, 2)
@@ -96,7 +110,7 @@ class New_trend_dialog(object): #класс описывающий диалог 
             comment ="'"+ str(comment_b.get_text(comment_b.get_start_iter(), comment_b.get_end_iter()))+"'"
             sourses_b = self.wTree.get_widget("srs_text").get_buffer()
             sourses ="'"+ str(sourses_b.get_text(sourses_b.get_start_iter(), sourses_b.get_end_iter()))+"'"
-            if self.fs_chk.get_active():
+            if self.fs_chk.get_active() or self.fs_chk2.get_active():
                 self.power*=2
             relationship = u"'[2,4], [3,-2]'"
             try:
