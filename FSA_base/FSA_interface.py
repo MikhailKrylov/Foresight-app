@@ -51,17 +51,21 @@ class Trend_dialog(object): #класс описывающий диалог вн
         random_color = self.parent.area.window.get_colormap().alloc(random.randint(0,65535), random.randint(0,65535), random.randint(0,65535))
         self.palitra.set_current_color(random_color)
         self.last_entry = self.s_year_text
+        
         def hide_show(obj, active):
             if active():    self.palitra.show()
             else:   self.palitra.hide()
                 
         # print event
         color_sel_chbutn.connect("toggled", hide_show, color_sel_chbutn.get_active)
+        
         def scale_show(obj_, event):
             if obj_ == self.s_year_text:
                 self.last_entry = self.s_year_text #Последнее выбранное поле текста
+                self.years_scale.set_value(int(self.s_year_text.get_text()))
             elif obj_ == self.f_year_text:
                 self.last_entry = self.f_year_text
+                self.years_scale.set_value(int(self.f_year_text.get_text()))
         def scale_hide(obj_, event):
             self.years_scale.hide()
         def set_data(obj_):           
@@ -99,6 +103,7 @@ class Trend_dialog(object): #класс описывающий диалог вн
         self.cansel_btn.connect("clicked", self.quit_) #обработка нажатия клавиши "Закрыть"
         if Fill:
             self.to_fill()
+            self.years_scale.set_value(int(self.s_year_text.get_text())) #первичная инициализация значения ползунка.
         gtk.main()
     def to_fill(self):
         trend = self.Arrow
