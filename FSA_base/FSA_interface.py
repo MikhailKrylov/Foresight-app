@@ -51,7 +51,7 @@ class Trend_dialog(object): #класс описывающий диалог вн
         random_color = self.parent.area.window.get_colormap().alloc(random.randint(0,65535), random.randint(0,65535), random.randint(0,65535))
         self.palitra.set_current_color(random_color)
         self.last_entry = self.s_year_text
-        
+
         def hide_show(obj, active):
             if active():    self.palitra.show()
             else:   self.palitra.hide()
@@ -62,19 +62,36 @@ class Trend_dialog(object): #класс описывающий диалог вн
         def scale_show(obj_, event):
             if obj_ == self.s_year_text:
                 self.last_entry = self.s_year_text #Последнее выбранное поле текста
-                self.years_scale.set_value(int(self.s_year_text.get_text()))
+                if int(self.s_year_text.get_text())<= int(self.f_year_text.get_text()):
+                    self.years_scale.set_value(int(self.s_year_text.get_text()))
+                else:
+                    self.years_scale.set_value(int(self.f_year_text.get_text())-1)
+                    self.f_year_text.set_text(str(int(self.f_year_text.get_text())-1))
             elif obj_ == self.f_year_text:
                 self.last_entry = self.f_year_text
-                self.years_scale.set_value(int(self.f_year_text.get_text()))
+                if int(self.f_year_text.get_text())>= int(self.s_year_text.get_text())+1:
+                    self.years_scale.set_value(int(self.f_year_text.get_text()))
+                else:
+                    self.years_scale.set_value(int(self.s_year_text.get_text())+1)
+                    self.f_year_text.set_text(str(int(self.s_year_text.get_text())+1))
         def scale_hide(obj_, event):
             self.years_scale.hide()
-        def set_data(obj_):           
-            self.last_entry.set_text(str(self.years_scale.get_value())[:4])
-        self.s_year_text.connect("focus-in-event",scale_show)
-        self.f_year_text.connect("focus-in-event",scale_show)
-        self.years_scale.connect("focus-in-event", scale_show)
+        def set_data(obj_, t_ = None, m_ = None):        
+            if self.last_entry == self.f_year_text:
+                if int(self.f_year_text.get_text())>= int(self.s_year_text.get_text())+1:
+                    self.last_entry.set_text(str(self.years_scale.get_value())[:4])
+                else:
+                    self.last_entry.set_text(str(int(self.s_year_text.get_text())+1))
+                    self.years_scale.set_value(int(self.s_year_text.get_text())+1)
+            else:
+                if int(self.s_year_text.get_text())<= int(self.f_year_text.get_text()):
+                    self.last_entry.set_text(str(self.years_scale.get_value())[:4])
+                else:
+                    self.last_entry.set_text(str(int(self.f_year_text.get_text())-1))
+                    self.years_scale.set_value(int(self.f_year_text.get_text())-1)
+        self.s_year_text.connect("focus-in-event", scale_show)
+        self.f_year_text.connect("focus-in-event", scale_show)
         self.years_scale.connect_object("value_changed", set_data, self.last_entry)
-        
         def set_pwr(widget_ ,E_arg):
             if E_arg == 0 and widget_.get_active(): #Возрастающая
                 act = int(self.fs_chk2.get_active())
