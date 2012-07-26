@@ -317,7 +317,6 @@
                             <property name="height_request">50</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="update_policy">discontinuous</property>
                             <property name="adjustment">2000 2000 2055 1 10 1</property>
                             <property name="lower_stepper_sensitivity">on</property>
                             <property name="round_digits">0</property>
