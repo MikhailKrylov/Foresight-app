@@ -23,7 +23,8 @@ class base: #главный класс для работы с базой дан�
         except:
             traceback.print_exc()
             print u"Ошибка: Невозможно создать базу."
-    def print_db(self): #Вывод ДБ на экран. Для тестирования.
+    def load(self): #Вывод ДБ на экран. Для тестирования.
+        self.connect_db()
         try:
             self.cursor.execute('SELECT * FROM trends ')
             trandlist = self.cursor.fetchall()  
@@ -34,6 +35,7 @@ class base: #главный класс для работы с базой дан�
         except:
             traceback.print_exc()
             print "Ошибка: Не возможно вывести базу данных"
+        self.cursor.close()
     def add_rsh(self, data_str):#добавление нового элемента в таблицу отношений
         try:
             self.cursor.execute('INSERT INTO relationships (id, base_trend, second_trend, comment, type) VALUES(NULL,'+data_str+')')
@@ -76,5 +78,5 @@ class base: #главный класс для работы с базой дан�
     def update_str(self, column, data, key_status, key = "trend_name", table = "trends"):
         self.cursor = self.connect.cursor()
         self.cursor.execute('UPDATE '+table+' SET '+column+ ' = '+data+' WHERE '+str(key)+' = ' +str(key_status))
-        
-        
+    def delete_str(self, key_value, key = "id", table = "trends"): 
+        self.cursor.execute('DELETE FROM '+table +' WHERE '+ key + ' = '+key_value)

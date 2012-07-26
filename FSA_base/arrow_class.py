@@ -24,13 +24,14 @@ class arrow(object):
         self.power = power
         self.s_time = start_year
         self.f_time = year_of_end
-        #sf = float(self.area.allocation.width)
-        #st = float(self.s_time) - 2000.
         self.s_point = int(float(self.area.allocation.width)/55. * (float(self.s_time) - 2000.))
         self.f_point = int(float(self.area.allocation.width)/55. * (float(self.f_time) - 2000.))
         self.text_rnd = True
         self.arrow_rnd = True
         self.get_mouse_motion = False
+        self.to_delete = False
+    def __del__(self):
+        pass
     def rendring(self, y):
         self.s_point = int(float(self.area.allocation.width)/55.0 *(float(self.s_time) - 2000.))
         self.f_point = int(float(self.area.allocation.width)/55.0 * (float(self.f_time) - 2000.))
@@ -43,8 +44,15 @@ class arrow(object):
         #цвет задается в интервале от 0 до 65535
         gc.foreground = self.color
         gc.line_width = abs(int(self.power))+1  
-        if self.power == 0: gc.line_width = 2
-        if self.power > 0:
+        if self.to_delete:
+            tx = x1+5
+            while tx <= x2:
+                gc.line_width = 1
+                drawable.draw_line(gc, x1, self.y+3, tx, self.y-3)
+                drawable.draw_line(gc, x1, self.y-3, tx, self.y+3)
+                x1 = tx+5
+                tx = x1+5
+        elif self.power > 0:
             drawable.draw_line(gc, x1, self.y, x2, self.y)
         elif self.power <0:
             tx = x1+abs(int(self.power))*5
@@ -53,6 +61,7 @@ class arrow(object):
                 x1 = tx+abs(int(self.power))*5
                 tx = x1+abs(int(self.power))*5
         else:
+            gc.line_width = 2
             tx = x1+10
             n = 1
             while x1 <= x2-10:
@@ -70,7 +79,11 @@ class arrow(object):
         drawable = self.area.window
         gc = drawable.new_gc() 
         gc.foreground = self.color
-        layout = self.area.create_pango_layout(self.name)
+        if self.to_delete:
+            gc.foreground =  self.area.window.get_colormap().alloc(65535,0,0)
+            layout = self.area.create_pango_layout('!У! '+self.name +' !У!')
+        else:
+            layout = self.area.create_pango_layout(self.name)
         layout.set_font_description(pango.FontDescription(self.font))
         font_size = int(self.font.split(" ")[-1])*2
         drawable.draw_layout(gc, x1, self.y-font_size, layout)

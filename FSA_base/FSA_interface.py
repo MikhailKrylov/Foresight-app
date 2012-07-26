@@ -32,6 +32,8 @@ class Trend_dialog(object): #класс описывающий диалог вн
         self.Arrow = arrow_
         self.wTree = gtk.glade.XML('new_trend_window3.glade')
         self.window = self.wTree.get_widget('new_trend_dialog')
+        if self.Arrow.to_delete:
+            self.to_delete_dialog()
         self.cansel_btn = self.wTree.get_widget('Cansel_btn')
         self.ok_btn = self.wTree.get_widget('Ok_btn')
         self.sp_rbtn = self.wTree.get_widget('Spower_radio_btn')
@@ -46,13 +48,13 @@ class Trend_dialog(object): #класс описывающий диалог вн
         self.doc_text = self.wTree.get_widget('doc_text')
         self.srs_text = self.wTree.get_widget('srs_text')
         self.name_str = self.wTree.get_widget('name_str')
+        self.to_del_btn = self.wTree.get_widget('to_delete_btn')
         color_sel_chbutn = self.wTree.get_widget('color_selection_on')
         self.f_year_text.set_text('2012')
         self.s_year_text.set_text('2000')
         random_color = self.parent.area.window.get_colormap().alloc(random.randint(0,65535), random.randint(0,65535), random.randint(0,65535))
         self.palitra.set_current_color(random_color)
         self.last_entry = self.s_year_text
-
         def hide_show(obj, active):
             if active():    self.palitra.show()
             else:   self.palitra.hide()
@@ -114,15 +116,52 @@ class Trend_dialog(object): #класс описывающий диалог вн
                 self.fs_chk.set_sensitive(0)
                 self.fs_chk.hide()
                 self.power = -1     
+        def to_delete(obj_, e = None):
+            if self.to_del_btn.get_active():
+                self.doc_text.set_sensitive(0)
+                self.s_year_text.set_sensitive(0)
+                self.f_year_text.set_sensitive(0)
+                self.years_scale.set_sensitive(0)
+                self.srs_text.set_sensitive(0)
+                self.palitra.set_sensitive(0)
+                self.fs_chk.set_sensitive(0)
+                self.up_rbtn.set_sensitive(0)
+                self.mp_rbtn.set_sensitive(0)
+                self.sp_rbtn.set_sensitive(0)
+            else:
+                self.doc_text.set_sensitive(1)
+                self.s_year_text.set_sensitive(1)
+                self.f_year_text.set_sensitive(1)
+                self.years_scale.set_sensitive(1)
+                self.srs_text.set_sensitive(1)
+                self.palitra.set_sensitive(1)
+                self.fs_chk.set_sensitive(1)
+                self.up_rbtn.set_sensitive(1)
+                self.mp_rbtn.set_sensitive(1)
+                self.sp_rbtn.set_sensitive(1)
         self.sp_rbtn.connect('toggled', set_pwr, 0)
         self.up_rbtn.connect('toggled', set_pwr, 1)
         self.mp_rbtn.connect('toggled', set_pwr, 2)
         self.ok_btn.connect('clicked', self.ok_click) #обработка нажатия клавиши 'Ок'
         self.cansel_btn.connect('clicked', self.quit_) #обработка нажатия клавиши 'Закрыть'
+        self.to_del_btn.connect('clicked', to_delete)
         if Fill:
             self.to_fill()
             self.years_scale.set_value(int(self.s_year_text.get_text())) #первичная инициализация значения ползунка.
         gtk.main()
+    def to_delete_dialog(self):
+        del_wrng = self.wTree.get_widget("Delete_warning")
+        del_wrng.show()
+        ok_btn = self.wTree.get_widget("yes_clr_btn")
+        no_btn = self.wTree.get_widget("no_cls_btn")
+        def ok_click(obj_, e = None):
+            self.Arrow.to_delete = False
+            del_wrng.destroy()
+        def no_click(obj_, e = None):
+            del_wrng.destroy()
+            self.quit_()
+        ok_btn.connect("clicked", ok_click)
+        no_btn.connect("clicked", no_click)
     def to_fill(self):
         trend = self.Arrow
         if trend.power>0:
@@ -149,6 +188,8 @@ class Trend_dialog(object): #класс описывающий диалог вн
     def quit_(self, Ea = None, Ba = None):
         self.window.destroy()
     def ok_click(self, e_arg):
+        if self.to_del_btn.get_active():
+            self.Arrow.to_delete = True
         plagiat = False # проверка на наличие тренда с таким названием
         name = self.name_str.get_text()
         if not self.Fill:
@@ -223,7 +264,6 @@ class Font_selection_window(object): #класс описывающий диал
 class fsainterface(object):
     wTree = None
     def __init__(self):
-       
         self.wTree = gtk.glade.XML( 'main_interface.glade' ) #подключение glade оболочки
         self.area = self.wTree.get_widget('MainDrawingArea')
         self.font = 'Sans 19'
@@ -286,22 +326,25 @@ class fsainterface(object):
         while x < self.area.allocation.width:
               drawable.draw_line(gc, int(x), 0, int(x), heigth)
               x+=k
-            
     def db_visual(self,rebuilding_key = 0): #обращение к интерфейсу базы данных
         type_string = 'trend_name UTF8(100), comment UTF8(300),  sources TEXT(300), relationship TEXT(300), power INTEGER(2), s_point INTEGER(32), f_point INTEGER(32)'
         self.trend_base = db_interface.base(type_string)
         #trend_base.delete_db()
-        self.trend_base.connect_db()
    #     self.trend_base.create(rebuilding_key)
     def db_load_to_arrows(self, e1 = None, e2 = None):
-        trlist = self.trend_base.print_db()
+        for ar in self.arrows:
+            del ar
+            self.arrows = list()
+        trlist = self.trend_base.load()
         for trend in trlist:
-            self.arrows.append(arrow(self.area, self.font, trend[1], trend[2], trend[3], trend[4], trend[5], trend[6], trend[7]))
+            self.arrows.append(arrow(self.area, self.font, trend[1], trend[2], trend[3], trend[4], trend[5], trend[6], trend[7], trend[0]))
         self.trend_base.cursor.close()
         self.rendring()
         #trend_base.refresh()
+    #Добавляет строку в БД
     def db_add_data(self, data_string = 'Name, comment, sourses, relationship, power, start_year, year_of_end'):
         self.trend_base.add_data(data_string)
+    #Обновляет БД исходя из массива объектов Arrows
     def db_update_from_arrows(self, e1 = None, e2 = None):
         self.trend_base.connect_db()
         for arrow_ in self.arrows:
@@ -316,22 +359,24 @@ class fsainterface(object):
             relationship ="'" + str(arrow_.relationship) + "'"
             b_str = name + u", " + comment + u", " + sourses + u"," + relationship+u"," + power + u"," + s_year+u"," + f_year
             f_trend = self.trend_base.search_string(name)
-            print 'found:', f_trend
-            if len(f_trend) == 0:
-                self.db_add_data(b_str)
+            if arrow_.to_delete:
+                self.trend_base.delete_str(str(arrow_.id))
             else:
-               u_name = 'trend_name'
-               u_comment =  'comment'
-               u_sources =  'sources' 
-               u_rsh = 'relationship'
-               u_power = 'power'
-               u_syear =  's_point' 
-               u_fyear =  'f_point'
-               self.trend_base.update_str(u_comment, comment, name)
-               self.trend_base.update_str(u_sources, sourses, name)
-               self.trend_base.update_str(u_rsh, relationship, name)
-               self.trend_base.update_str(u_power, power, name)
-               self.trend_base.update_str(u_syear, s_year, name)
-               self.trend_base.update_str(u_fyear, f_year, name)
+                if len(f_trend) == 0:
+                    self.db_add_data(b_str)
+                else:
+                   u_name = 'trend_name'
+                   u_comment =  'comment'
+                   u_sources =  'sources' 
+                   u_rsh = 'relationship'
+                   u_power = 'power'
+                   u_syear =  's_point' 
+                   u_fyear =  'f_point'
+                   self.trend_base.update_str(u_comment, comment, name)
+                   self.trend_base.update_str(u_sources, sourses, name)
+                   self.trend_base.update_str(u_rsh, relationship, name)
+                   self.trend_base.update_str(u_power, power, name)
+                   self.trend_base.update_str(u_syear, s_year, name)
+                   self.trend_base.update_str(u_fyear, f_year, name)
             
 aa = fsainterface()
