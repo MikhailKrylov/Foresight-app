@@ -44,6 +44,8 @@ class base: #главный класс для работы с базой дан�
         except:
             traceback.print_exc()
             print u"Ошибка: Невозможно добавить данные в базу."
+    def load_rsh(self):
+        pass
     def add_data(self, data_str): #Добавление нового элемента в таблицу трендов
         try:
             self.cursor.execute('INSERT INTO trends (id, trend_name, comment, sources, relationship, power, s_point, f_point) VALUES(NULL,'+data_str+')')

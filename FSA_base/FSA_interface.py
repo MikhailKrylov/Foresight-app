@@ -21,6 +21,7 @@ except:
     sys.exit(1)
 import db_interface #подключение модуля работы с базой данных
 from arrow_class import arrow #Подключение класса 'стрелки'
+from Relationship_class import relationship
 #№главный класс для работы с графическим интерфейсом
 class Trend_dialog(object): #класс описывающий диалог внесения в базу нового тренда или редактирования существующего
     wTree = None
@@ -277,8 +278,13 @@ class fsainterface(object):  #Главный класс работы с инте
         self.load_btn = self.wTree.get_widget('normal_trend')
         self.upload_btn = self.wTree.get_widget('f_trend')
         vpaned2 = self.wTree.get_widget("vpaned2")
+        self.rsh_on = self.wTree.get_widget('new_rsh_tbtn')
+        self.trand_on = self.wTree.get_widget('new_trend_tbtn')
+        self.exit_menu_btn = self.wTree.get_widget('exit_menu_tg')
         self.win_size = self.window.allocation
+        self.rsh_points = ((0,False),(0, False))
         self.arrows = [] #все 'стрелки'
+        self.rshps = [] #все связи между трендами
         self.db_name = "fs_db2.db" #Название подключаемой БД
         self.db_visual(0) #подключение БД к интерфейсу 
         def motion_notify(ruler, event): #обработка движения мыши по зоне рисования
@@ -295,16 +301,37 @@ class fsainterface(object):  #Главный класс работы с инте
         self.area.connect_object('motion_notify_event', motion_notify, hruler1) 
         self.new_btn.connect_object('activate', self.new_trend_dialog_open, None) #обработка нажатия клавиши 'Создать'
         def mouseclick(Empty_arg,event = None): #обработка щелчка мыши по зоне рисования
+         #   if not self.rsh_points[0][1]:
+         #       print event
             for arrow in self.arrows:
                 if arrow.get_mouse_motion:
-                    edit_dlg = Trend_dialog(self, arrow, True)
+                    if not self.rsh_on.get_active():
+                        edit_dlg = Trend_dialog(self, arrow, True)
+                  #  else:
+                  #      drawable = self.area.window
+                  #      gc = drawable.new_gc()
+                  #      gc.foreground = self.area.window.get_colormap().alloc(0, 55535, 0)                 
+                  #      drawable.draw_line(gc, int(x), 0, int(x), heigth) 
+             #   if self.trand_on.get_active():
+             #       drawable = self.area.window
+             #       gc = drawable.new_gc()
+             #       gc.foreground = self.area.window.get_colormap().alloc(0, 55535, 0)                 
+             # #      drawable.draw_line(gc, int(x), 0, int(x), heigth) 
     
             #print  e1[2]-60,  new_rect.width
-
+        def btn_switch(obj,scd =None):
+            if obj == self.trand_on:
+                if obj.get_active(): self.rsh_on.set_active(0)
+            else:
+                if obj.get_active(): self.trand_on.set_active(0)
+                
         self.area.connect_object('button_press_event', mouseclick, None)
         self.load_btn.connect('clicked', self.db_load_to_arrows) 
         self.upload_btn.connect('clicked', self.db_update_from_arrows)  
-        self.font_sel_btn.connect('button_press_event', self.open_font_dialog)
+        self.font_sel_btn.connect('activate', self.open_font_dialog)
+        self.trand_on.connect('clicked',btn_switch)
+        self.rsh_on.connect('clicked',btn_switch)
+        self.exit_menu_btn.connect('activate', self.quit)
         gtk.main()
         
     def open_font_dialog(self, widget, Emty_arg):#вызов диалога выбора шрифта
@@ -312,8 +339,8 @@ class fsainterface(object):  #Главный класс работы с инте
 
     def new_trend_dialog_open(self,Emty_arg): #Вызов диалога 'новый тренд'
         ntw = Trend_dialog(self)
-    def quit(self, widget): #выход (уничтожение окна)
-        self.wTree.get_widget('MainWindow').destroy()
+    def quit(self, widget, ar1 = None): #выход (уничтожение окна)
+        self.window.destroy()
     def rendring(self):
         self.area.window.clear()
         hg = self.area.get_allocation().height
@@ -324,6 +351,8 @@ class fsainterface(object):  #Главный класс работы с инте
         for ar in self.arrows:
             ar.rendring(y)
             y+=k
+        for rsh in self.rshps:
+            rsh.rendring()
     def render_v_lines(self):
         drawable = self.area.window
         color = self.area.window.get_colormap().alloc(55535, 55535, 65535)
@@ -348,13 +377,14 @@ class fsainterface(object):  #Главный класс работы с инте
         for trend in trlist:
             self.arrows.append(arrow(self.area, self.font, trend[1], trend[2],  trend[3], trend[4], trend[5], trend[6], trend[0]))
         self.trend_base.cursor.close()
+        self.load_relationship()
         self.rendring()
         #trend_base.refresh()
     #Добавляет строку в БД
     def db_add_data(self, data_string = 'Name, comment, sourses , power, start_year, year_of_end'):
         self.trend_base.add_data(data_string)
-    def load_relationships(self):
-        pass
+    def load_relationship(self):
+        self.rshps.append(relationship(self, self.arrows[0], self.arrows[1], u'Автобусные астоновки', u'вот такой вот комментарий'))
     #Обновляет БД исходя из массива объектов Arrows
     def db_update_from_arrows(self, e1 = None, e2 = None):
         self.trend_base.connect_db()
