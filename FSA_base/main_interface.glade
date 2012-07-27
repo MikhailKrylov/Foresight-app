@@ -3,12 +3,15 @@
   <!-- interface-requires gtk+ 2.24 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <widget class="GtkWindow" id="MainWindow">
-    <property name="width_request">800</property>
-    <property name="height_request">600</property>
+    <property name="width_request">1024</property>
+    <property name="height_request">715</property>
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="default_width">800</property>
-    <property name="default_height">600</property>
+    <property name="title" translatable="yes">Форсайт карты</property>
+    <property name="resizable">False</property>
+    <property name="window_position">center</property>
+    <property name="default_width">1024</property>
+    <property name="default_height">715</property>
     <child>
       <widget class="GtkVPaned" id="vpaned1">
         <property name="visible">True</property>
@@ -17,13 +20,13 @@
         <child>
           <widget class="GtkMenuBar" id="menubar1">
             <property name="width_request">100</property>
-            <property name="height_request">40</property>
+            <property name="height_request">35</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
               <widget class="GtkMenuItem" id="menuitem1">
                 <property name="width_request">53</property>
-                <property name="height_request">35</property>
+                <property name="height_request">30</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="use_action_appearance">False</property>
@@ -208,7 +211,7 @@
             <child>
               <widget class="GtkMenuItem" id="menuitem4">
                 <property name="width_request">78</property>
-                <property name="height_request">35</property>
+                <property name="height_request">30</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="use_action_appearance">False</property>
@@ -240,13 +243,13 @@
         </child>
         <child>
           <widget class="GtkHPaned" id="hpaned1">
-            <property name="width_request">800</property>
-            <property name="height_request">600</property>
+            <property name="width_request">1024</property>
+            <property name="height_request">680</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <child>
               <widget class="GtkFixed" id="fixed1">
-                <property name="width_request">50</property>
+                <property name="width_request">60</property>
                 <property name="height_request">525</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -291,24 +294,27 @@
                   </widget>
                   <packing>
                     <property name="x">2</property>
-                    <property name="y">526</property>
+                    <property name="y">650</property>
                   </packing>
                 </child>
               </widget>
               <packing>
-                <property name="resize">True</property>
+                <property name="resize">False</property>
                 <property name="shrink">False</property>
               </packing>
             </child>
             <child>
               <widget class="GtkVPaned" id="vpaned2">
-                <property name="width_request">750</property>
+                <property name="width_request">964</property>
+                <property name="height_request">738</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="position">20</property>
+                <property name="position_set">True</property>
                 <child>
                   <widget class="GtkDrawingArea" id="MainDrawingArea">
-                    <property name="width_request">725</property>
-                    <property name="height_request">525</property>
+                    <property name="width_request">964</property>
+                    <property name="height_request">650</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK | GDK_STRUCTURE_MASK</property>
@@ -321,8 +327,8 @@
                 </child>
                 <child>
                   <widget class="GtkHRuler" id="hruler1">
-                    <property name="width_request">750</property>
-                    <property name="height_request">25</property>
+                    <property name="width_request">964</property>
+                    <property name="height_request">35</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="lower">2000</property>
@@ -331,7 +337,7 @@
                     <property name="max_size">10</property>
                   </widget>
                   <packing>
-                    <property name="resize">False</property>
+                    <property name="resize">True</property>
                     <property name="shrink">False</property>
                   </packing>
                 </child>

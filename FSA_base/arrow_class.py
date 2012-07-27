@@ -33,11 +33,12 @@ class arrow(object):
     def __del__(self):
         pass
     def rendring(self, y):
-        self.s_point = int(float(self.area.allocation.width)/55.0 *(float(self.s_time) - 2000.))
-        self.f_point = int(float(self.area.allocation.width)/55.0 * (float(self.f_time) - 2000.))
+        s_point = int(float(self.area.allocation.width)/55.0 * (float(self.s_time) - 2000.))
+        f_point = int(float(self.area.allocation.width)/55.0 * (float(self.f_time) - 2000.))
+        self.s_point, self.f_point = s_point, f_point
         self.y = y
-        x1 = self.s_point
-        x2 = self.f_point 
+        x1 = s_point
+        x2 = f_point 
         drawable = self.area.window
         #gc Graphics Context, т.е. параметры.
         gc = drawable.new_gc() 
@@ -69,13 +70,16 @@ class arrow(object):
                 x1 +=22
                 n = -1*n
             
-        if self.text_rnd == True:
+        if self.text_rnd:
             self.render_text()
-        if self.arrow_rnd == True:
+        if self.arrow_rnd:
             drawable.draw_line(gc, x2-abs(int(self.power)+3)*2, self.y-abs(int(self.power)+3)*2, x2, self.y+1)
             drawable.draw_line(gc, x2-abs(int(self.power)+3)*2, self.y+abs(int(self.power)+3)*2, x2, self.y-1)
     def render_text(self):
-        x1 = self.s_point
+        s_point = int(float(self.area.allocation.width)/55.0 * (float(self.s_time) - 2000.))
+        f_point = int(float(self.area.allocation.width)/55.0 * (float(self.f_time) - 2000.))
+        self.s_point, self.f_point = s_point, f_point
+        x1 = s_point
         drawable = self.area.window
         gc = drawable.new_gc() 
         gc.foreground = self.color
@@ -90,16 +94,22 @@ class arrow(object):
     def selected(self):
         pass
     def mouse_motion_on(self): #Действия при наведении мыши
+        s_point = int(float(self.area.allocation.width)/55.0 * (float(self.s_time) - 2000.))
+        f_point = int(float(self.area.allocation.width)/55.0 * (float(self.f_time) - 2000.))
+        self.s_point, self.f_point = s_point, f_point
         drawable = self.area.window
         color = self.area.window.get_colormap().alloc(55535, 25535, 535)
         gc = drawable.new_gc()
         gc.foreground = color
-        drawable.draw_arc(gc, True, self.s_point-14, self.y-6, 12, 12, 0, 360*64)
+        drawable.draw_arc(gc, True, s_point-14, self.y-6, 12, 12, 0, 360*64)
         self.get_mouse_motion = True
     def mouse_motion_off(self):
+        s_point = int(float(self.area.allocation.width)/55.0 * (float(self.s_time) - 2000.))
+        f_point = int(float(self.area.allocation.width)/55.0 * (float(self.f_time) - 2000.))
+        self.s_point, self.f_point = s_point, f_point
         drawable = self.area.window
         bgcolor = self.area.window.get_colormap().alloc(62194, 61937, 61680)
         gc = drawable.new_gc()
         gc.foreground = bgcolor
-        drawable.draw_arc(gc, True, self.s_point-14, self.y-6, 12, 12, 0, 360*64)
+        drawable.draw_arc(gc, True, s_point-14, self.y-6, 12, 12, 0, 360*64)
         self.get_mouse_motion = False

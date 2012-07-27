@@ -255,17 +255,20 @@ class Font_selection_window(object): #класс описывающий диал
         def OK_(Emty_arg): #Применить и выйти
 
             self.parent.font = self.window.get_font_name()
-
+            for ar in self.parent.arrows:
+                ar.font = self.parent.font
+            self.parent.rendring()
             self.window.destroy()
         self.ok_btn.connect_object('clicked', OK_, None) #Обработка нажатия клавиши 'Ок'
         gtk.main()
         
     
-class fsainterface(object):
+class fsainterface(object):  #Главный класс работы с интерфейсом.
     wTree = None
     def __init__(self):
         self.wTree = gtk.glade.XML( 'main_interface.glade' ) #подключение glade оболочки
         self.area = self.wTree.get_widget('MainDrawingArea')
+        self.window = self.wTree.get_widget('MainWindow')
         self.font = 'Sans 19'
         self.font_sel_btn = self.wTree.get_widget('font_select_btn')
         self.new_btn = self.wTree.get_widget('new_trend_btn')
@@ -273,7 +276,10 @@ class fsainterface(object):
         status_lbl = self.wTree.get_widget('status_lbl')
         self.load_btn = self.wTree.get_widget('normal_trend')
         self.upload_btn = self.wTree.get_widget('f_trend')
+        vpaned2 = self.wTree.get_widget("vpaned2")
+        self.win_size = self.window.allocation
         self.arrows = [] #все 'стрелки'
+        self.db_name = "fs_db2.db" #Название подключаемой БД
         self.db_visual(0) #подключение БД к интерфейсу 
         def motion_notify(ruler, event): #обработка движения мыши по зоне рисования
             for arrow in self.arrows:
@@ -292,22 +298,25 @@ class fsainterface(object):
             for arrow in self.arrows:
                 if arrow.get_mouse_motion:
                     edit_dlg = Trend_dialog(self, arrow, True)
-                    break
+    
+            #print  e1[2]-60,  new_rect.width
 
         self.area.connect_object('button_press_event', mouseclick, None)
         self.load_btn.connect('clicked', self.db_load_to_arrows) 
         self.upload_btn.connect('clicked', self.db_update_from_arrows)  
         self.font_sel_btn.connect('button_press_event', self.open_font_dialog)
         gtk.main()
+        
     def open_font_dialog(self, widget, Emty_arg):#вызов диалога выбора шрифта
         fsw = Font_selection_window(self) 
+
     def new_trend_dialog_open(self,Emty_arg): #Вызов диалога 'новый тренд'
         ntw = Trend_dialog(self)
     def quit(self, widget): #выход (уничтожение окна)
         self.wTree.get_widget('MainWindow').destroy()
     def rendring(self):
         self.area.window.clear()
-        hg = self.area.allocation.height
+        hg = self.area.get_allocation().height
         n = len(self.arrows)
         y = 50
         k = hg/(n+1)
@@ -321,17 +330,17 @@ class fsainterface(object):
         gc = drawable.new_gc()
         gc.foreground = color
         x = 0.
-        k = float(self.area.allocation.width)/22.
-        heigth = self.area.allocation.height
-        while x < self.area.allocation.width:
+        k = float(self.area.get_allocation().width)/22.
+        heigth = self.area.get_allocation().height
+        while x < self.area.get_allocation().width:
               drawable.draw_line(gc, int(x), 0, int(x), heigth)
               x+=k
     def db_visual(self,rebuilding_key = 0): #обращение к интерфейсу базы данных
         type_string = 'trend_name UTF8(100), comment UTF8(300),  sources TEXT(300), relationship TEXT(300), power INTEGER(2), s_point INTEGER(32), f_point INTEGER(32)'
-        self.trend_base = db_interface.base(type_string)
+        self.trend_base = db_interface.base(type_string, self.db_name)
         #trend_base.delete_db()
    #     self.trend_base.create(rebuilding_key)
-    def db_load_to_arrows(self, e1 = None, e2 = None):
+    def db_load_to_arrows(self, e1 = 0, e2 = None): #Загрузка данных из ДБ
         for ar in self.arrows:
             del ar
             self.arrows = list()
