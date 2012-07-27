@@ -65,18 +65,21 @@ class base: #главный класс для работы с базой дан�
         self.connect = sqlite.connect(self.name)
         self.cursor = self.connect.cursor()
     def search_string(self, key_value, key = "trend_name", table = "trends" ):
+        #self.connect_db()
         self.cursor.execute('SELECT * FROM ' +table+ ' WHERE '+key+' LIKE '+key_value)
         found_trend = self.cursor.fetchall() 
         return found_trend
+       # self.cursor.close()
     def verty_db(self):
-        
         self.cursor = self.connect.cursor()
         self.cursor.execute('DELETE FROM trends WHERE length(trend_name)<1')
         self.cursor.execute('DELETE FROM trends WHERE s_point<2000')
         self.cursor.execute('DELETE FROM trends WHERE f_point<2000')
         
     def update_str(self, column, data, key_status, key = "trend_name", table = "trends"):
-        self.cursor = self.connect.cursor()
+      #  self.cursor = self.connect.cursor()
         self.cursor.execute('UPDATE '+table+' SET '+column+ ' = '+data+' WHERE '+str(key)+' = ' +str(key_status))
-    def delete_str(self, key_value, key = "id", table = "trends"): 
-        self.cursor.execute('DELETE FROM '+table +' WHERE '+ key + ' = '+key_value)
+       # self.cursor.close()
+    def delete_str(self, key_value, key = 'trend_name', table = 'trends'): 
+        self.cursor.execute('DELETE FROM '+table +' WHERE '+ key + ' LIKE '+key_value)
+        self.connect.commit()

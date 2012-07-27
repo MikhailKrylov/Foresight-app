@@ -360,7 +360,7 @@ class fsainterface(object):
             b_str = name + u", " + comment + u", " + sourses + u"," + relationship+u"," + power + u"," + s_year+u"," + f_year
             f_trend = self.trend_base.search_string(name)
             if arrow_.to_delete:
-                self.trend_base.delete_str(str(arrow_.id))
+                self.trend_base.delete_str(name)
             else:
                 if len(f_trend) == 0:
                     self.db_add_data(b_str)
