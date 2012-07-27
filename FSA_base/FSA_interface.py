@@ -33,8 +33,9 @@ class Trend_dialog(object): #класс описывающий диалог вн
         self.Arrow = arrow_
         self.wTree = gtk.glade.XML('new_trend_window3.glade')
         self.window = self.wTree.get_widget('new_trend_dialog')
-        if self.Arrow.to_delete:
-            self.to_delete_dialog()
+        if self.Arrow:
+            if self.Arrow.to_delete:
+                self.to_delete_dialog()
         self.cansel_btn = self.wTree.get_widget('Cansel_btn')
         self.ok_btn = self.wTree.get_widget('Ok_btn')
         self.sp_rbtn = self.wTree.get_widget('Spower_radio_btn')
