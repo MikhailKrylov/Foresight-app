@@ -12,7 +12,7 @@ except:
     print("GTK Not Availible")
     sys.exit(1)
 class arrow(object): 
-    def __init__(self, dw_area, font, name, comment, sourses, relationship, power, start_year, year_of_end, id = 0):
+    def __init__(self, dw_area, font, name, comment, sourses,  power, start_year, year_of_end, id = 0):
         self.id = id
         self.area = dw_area
         self.font = font
@@ -20,7 +20,7 @@ class arrow(object):
         self.name = name
         self.comment = comment
         self.sourses = sourses
-        self.relationship = relationship
+        self.relationship = None
         self.power = power
         self.s_time = start_year
         self.f_time = year_of_end

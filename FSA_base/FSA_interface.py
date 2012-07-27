@@ -336,7 +336,7 @@ class fsainterface(object):  #Главный класс работы с инте
               drawable.draw_line(gc, int(x), 0, int(x), heigth)
               x+=k
     def db_visual(self,rebuilding_key = 0): #обращение к интерфейсу базы данных
-        type_string = 'trend_name UTF8(100), comment UTF8(300),  sources TEXT(300), relationship TEXT(300), power INTEGER(2), s_point INTEGER(32), f_point INTEGER(32)'
+        type_string = 'trend_name UTF8(100), comment UTF8(300),  sources TEXT(300), power INTEGER(2), s_point INTEGER(32), f_point INTEGER(32)'
         self.trend_base = db_interface.base(type_string, self.db_name)
         #trend_base.delete_db()
    #     self.trend_base.create(rebuilding_key)
@@ -346,27 +346,28 @@ class fsainterface(object):  #Главный класс работы с инте
             self.arrows = list()
         trlist = self.trend_base.load()
         for trend in trlist:
-            self.arrows.append(arrow(self.area, self.font, trend[1], trend[2], trend[3], trend[4], trend[5], trend[6], trend[7], trend[0]))
+            self.arrows.append(arrow(self.area, self.font, trend[1], trend[2],  trend[3], trend[4], trend[5], trend[6], trend[0]))
         self.trend_base.cursor.close()
         self.rendring()
         #trend_base.refresh()
     #Добавляет строку в БД
-    def db_add_data(self, data_string = 'Name, comment, sourses, relationship, power, start_year, year_of_end'):
+    def db_add_data(self, data_string = 'Name, comment, sourses , power, start_year, year_of_end'):
         self.trend_base.add_data(data_string)
+    def load_relationships(self):
+        pass
     #Обновляет БД исходя из массива объектов Arrows
     def db_update_from_arrows(self, e1 = None, e2 = None):
         self.trend_base.connect_db()
         for arrow_ in self.arrows:
             name ="'"+ arrow_.name + "'"
             sourses ="'" + str(arrow_.sourses) + "'"
-            relationship = "'" + arrow_.relationship + "'"
             s_year ="'" + str(arrow_.s_time) + "'"
             f_year ="'" + str(arrow_.f_time) + "'"
             power = "'" + str(arrow_.power) + "'"
             comment ="'" + str(arrow_.comment) + "'"
             sourses ="'" + str(arrow_.sourses) + "'"
             relationship ="'" + str(arrow_.relationship) + "'"
-            b_str = name + u", " + comment + u", " + sourses + u"," + relationship+u"," + power + u"," + s_year+u"," + f_year
+            b_str = name + u", " + comment + u", " + sourses + u"," + u"," + power + u"," + s_year+u"," + f_year
             f_trend = self.trend_base.search_string(name)
             if arrow_.to_delete:
                 self.trend_base.delete_str(name)
@@ -377,13 +378,11 @@ class fsainterface(object):  #Главный класс работы с инте
                    u_name = 'trend_name'
                    u_comment =  'comment'
                    u_sources =  'sources' 
-                   u_rsh = 'relationship'
                    u_power = 'power'
                    u_syear =  's_point' 
                    u_fyear =  'f_point'
                    self.trend_base.update_str(u_comment, comment, name)
                    self.trend_base.update_str(u_sources, sourses, name)
-                   self.trend_base.update_str(u_rsh, relationship, name)
                    self.trend_base.update_str(u_power, power, name)
                    self.trend_base.update_str(u_syear, s_year, name)
                    self.trend_base.update_str(u_fyear, f_year, name)

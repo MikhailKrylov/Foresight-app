@@ -16,7 +16,7 @@ class base: #главный класс для работы с базой дан�
             #таблица трендов:
             self.cursor.execute('CREATE TABLE trends (id INTEGER PRIMARY KEY, '+self.type_str+')')
             #таблица отношений:
-            self.cursor.execute('CREATE TABLE relationships (id INTEGER PRIMARY KEY, base_trend TEXT(100), second_trend TEXT(100), comment TEXT(300), type INTEGER(2))')
+            self.cursor.execute('CREATE TABLE relationships (id INTEGER PRIMARY KEY, rsh_name TEXT(100),  base_trend TEXT(100), second_trend TEXT(100), comment TEXT(300), type INTEGER(2))')
             #таблица настроек:
             self.cursor.execute('CREATE TABLE properties (id INTEGER PRIMARY KEY, base_trend TEXT(100), color TEXT(20), position INTEGER(5), type INTEGET(2)')
             
@@ -38,7 +38,7 @@ class base: #главный класс для работы с базой дан�
         self.cursor.close()
     def add_rsh(self, data_str):#добавление нового элемента в таблицу отношений
         try:
-            self.cursor.execute('INSERT INTO relationships (id, base_trend, second_trend, comment, type) VALUES(NULL,'+data_str+')')
+            self.cursor.execute('INSERT INTO relationships (id, rsh_name, base_trend, second_trend, comment, type) VALUES(NULL,'+data_str+')')
             self.connect.commit()
             
         except:
