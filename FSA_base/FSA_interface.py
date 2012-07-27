@@ -212,7 +212,6 @@ class Trend_dialog(object): #класс описывающий диалог вн
                 sourses =str(sourses_b.get_text(sourses_b.get_start_iter(), sourses_b.get_end_iter()))
                 if self.fs_chk.get_active() or self.fs_chk2.get_active():
                     self.power*=2
-                relationship = u'"[2,4], [3,-2]"'
                 try:
                     int(self.s_year_text.get_text())
                     int(self.f_year_text.get_text())
@@ -225,20 +224,19 @@ class Trend_dialog(object): #класс описывающий диалог вн
                     power = str(self.power)
                     color = self.palitra.get_current_color()
                     if self.Fill:
-                        self.arrow_from_data(comment, sourses, f_year, s_year, relationship, color)
+                        self.arrow_from_data(comment, sourses, f_year, s_year, color)
                     else:
-                        self.Arrow = arrow(self.parent.area, self.parent.font, name, comment, sourses, relationship, power, s_year, f_year)
+                        self.Arrow = arrow(self.parent.area, self.parent.font, name, comment, sourses, power, s_year, f_year)
                         self.parent.arrows.append(self.Arrow)
                     self.parent.rendring()
                     self.quit_()
                 else:
                     print 'Ошибка: введите корректные даты!'
-    def arrow_from_data(self, comment, sourses, f_year, s_year, relationship, color):                        
+    def arrow_from_data(self, comment, sourses, f_year, s_year, color):                        
         self.Arrow.comment = comment
         self.Arrow.sourses = sourses
         self.Arrow.f_time = int(f_year)
         self.Arrow.s_time = int(s_year)
-        self.Arrow.relationship = relationship
         self.Arrow.color = self.parent.area.window.get_colormap().alloc(color)
 
 class Font_selection_window(object): #класс описывающий диалог выбора шрифта
@@ -341,6 +339,8 @@ class fsainterface(object):  #Главный класс работы с инте
     def new_trend_dialog_open(self,Emty_arg): #Вызов диалога 'новый тренд'
         ntw = Trend_dialog(self)
     def quit(self, widget, ar1 = None): #выход (уничтожение окна)
+        self.trend_base.cursor.close()
+        self.trend_base.connect.close()
         self.window.destroy()
     def rendring(self):
         self.area.window.clear()
@@ -398,7 +398,7 @@ class fsainterface(object):  #Главный класс работы с инте
             comment ="'" + str(arrow_.comment) + "'"
             sourses ="'" + str(arrow_.sourses) + "'"
             relationship ="'" + str(arrow_.relationship) + "'"
-            b_str = name + u", " + comment + u", " + sourses + u"," + u"," + power + u"," + s_year+u"," + f_year
+            b_str = name + u", " + comment + u", " + sourses + u"," + power + u"," + s_year+u"," + f_year
             f_trend = self.trend_base.search_string(name)
             if arrow_.to_delete:
                 self.trend_base.delete_str(name)

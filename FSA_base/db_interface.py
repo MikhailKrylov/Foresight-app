@@ -48,7 +48,7 @@ class base: #главный класс для работы с базой дан�
         pass
     def add_data(self, data_str): #Добавление нового элемента в таблицу трендов
         try:
-            self.cursor.execute('INSERT INTO trends (id, trend_name, comment, sources, relationship, power, s_point, f_point) VALUES(NULL,'+data_str+')')
+            self.cursor.execute('INSERT INTO trends (id, trend_name, comment, sources, power, s_point, f_point) VALUES(NULL,'+data_str+')')
             self.connect.commit()
             
         except:
@@ -67,11 +67,11 @@ class base: #главный класс для работы с базой дан�
         self.connect = sqlite.connect(self.name)
         self.cursor = self.connect.cursor()
     def search_string(self, key_value, key = "trend_name", table = "trends" ):
-        #self.connect_db()
+        self.cursor = self.connect.cursor()
         self.cursor.execute('SELECT * FROM ' +table+ ' WHERE '+key+' LIKE '+key_value)
         found_trend = self.cursor.fetchall() 
         return found_trend
-       # self.cursor.close()
+        self.cursor.close()
     def verty_db(self):
         self.cursor = self.connect.cursor()
         self.cursor.execute('DELETE FROM trends WHERE length(trend_name)<1')
@@ -79,9 +79,9 @@ class base: #главный класс для работы с базой дан�
         self.cursor.execute('DELETE FROM trends WHERE f_point<2000')
         
     def update_str(self, column, data, key_status, key = "trend_name", table = "trends"):
-      #  self.cursor = self.connect.cursor()
+        self.cursor = self.connect.cursor()
         self.cursor.execute('UPDATE '+table+' SET '+column+ ' = '+data+' WHERE '+str(key)+' = ' +str(key_status))
-       # self.cursor.close()
+        self.cursor.close()
     def delete_str(self, key_value, key = 'trend_name', table = 'trends'): 
         self.cursor.execute('DELETE FROM '+table +' WHERE '+ key + ' LIKE '+key_value)
         self.connect.commit()
