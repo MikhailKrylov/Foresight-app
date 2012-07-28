@@ -634,15 +634,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <widget class="GtkComboBox" id="trendlist_box">
-                        <property name="width_request">300</property>
-                        <property name="height_request">30</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="items" translatable="yes">Выберите тренд:</property>
-                      </widget>
-                    </child>
-                    <child>
                       <widget class="GtkRadioButton" id="cont_rb">
                         <property name="label" translatable="yes">Продолжение</property>
                         <property name="width_request">150</property>
@@ -658,7 +649,7 @@
                       </widget>
                       <packing>
                         <property name="x">20</property>
-                        <property name="y">80</property>
+                        <property name="y">130</property>
                       </packing>
                     </child>
                     <child>
@@ -678,7 +669,7 @@
                       </widget>
                       <packing>
                         <property name="x">20</property>
-                        <property name="y">110</property>
+                        <property name="y">160</property>
                       </packing>
                     </child>
                     <child>
@@ -698,7 +689,7 @@
                       </widget>
                       <packing>
                         <property name="x">20</property>
-                        <property name="y">140</property>
+                        <property name="y">190</property>
                       </packing>
                     </child>
                     <child>
@@ -711,7 +702,69 @@
                       </widget>
                       <packing>
                         <property name="x">15</property>
-                        <property name="y">50</property>
+                        <property name="y">100</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkScrolledWindow" id="scrolledwindow1">
+                        <property name="width_request">380</property>
+                        <property name="height_request">100</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="vadjustment">0 0 260 9.8000000000000007 88.200000000000003 98</property>
+                        <property name="hscrollbar_policy">automatic</property>
+                        <property name="vscrollbar_policy">automatic</property>
+                        <child>
+                          <widget class="GtkViewport" id="viewport1">
+                            <property name="width_request">290</property>
+                            <property name="height_request">200</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="hadjustment">0 0 378 37.800000000000004 340.19999999999999 378</property>
+                            <property name="vadjustment">0 0 200 6.8000000000000007 61.200000000000003 68</property>
+                            <property name="shadow_type">etched-out</property>
+                            <child>
+                              <widget class="GtkFixed" id="fixed4">
+                                <property name="width_request">300</property>
+                                <property name="height_request">260</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <child>
+                                  <widget class="GtkComboBox" id="trendlist_box">
+                                    <property name="width_request">250</property>
+                                    <property name="height_request">35</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="items" translatable="yes">Выберите тренд:</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="x">50</property>
+                                    <property name="y">5</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkButton" id="add_new_btn">
+                                    <property name="label" translatable="yes">+</property>
+                                    <property name="width_request">35</property>
+                                    <property name="height_request">35</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">True</property>
+                                    <property name="use_action_appearance">False</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="x">10</property>
+                                    <property name="y">5</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="x">1</property>
+                        <property name="y">2</property>
                       </packing>
                     </child>
                   </widget>

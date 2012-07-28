@@ -2,6 +2,9 @@
 """
 Created on 16.07.2012
 
+Модуль содержит класс описывающий поведение диалога создания/редактирования
+тенденции.
+
 @author: Werer
 """
 
@@ -20,10 +23,8 @@ try:
 except:  
     print('GTK Not Availible')
     sys.exit(1)
-import db_interface #подключение модуля работы с базой данных
 from arrow_class import arrow #Подключение класса 'стрелки'
 from Relationship_class import relationship
-#№главный класс для работы с графическим интерфейсом
 class Trend_dialog(object): #класс описывающий диалог внесения в базу нового тренда или редактирования существующего
     wTree = None
     def __init__(self, parent, arrow_ = None, Fill = False):
@@ -55,6 +56,9 @@ class Trend_dialog(object): #класс описывающий диалог вн
         color_sel_chbutn = self.wTree.get_widget('color_selection_on')
         self.error_dialog = self.wTree.get_widget('Error_dialog')
         self.trend_list_box = self.wTree.get_widget('trendlist_box')
+        self.all_add_btn = list() #список всех кнопок для добавления новых связей
+        self.all_slctd_trds = list() #Список всех созданных ComboBox с трендами
+        self.all_add_btn.append(self.wTree.get_widget('add_new_btn'))
         self.f_year_text.set_text('2012')
         self.s_year_text.set_text('2000')
         random_color = self.parent.area.window.get_colormap().alloc(random.randint(0,65535), random.randint(0,65535), random.randint(0,65535))
@@ -154,12 +158,30 @@ class Trend_dialog(object): #класс описывающий диалог вн
         self.cansel_btn.connect('clicked', self.quit_) #обработка нажатия клавиши 'Закрыть'
         self.to_del_btn.connect('clicked', to_delete)
         self.wTree.get_widget('erd_ok_btn').connect('clicked',object_hide, self.error_dialog)
+        self.all_add_btn[-1].connect('clicked', self.add_new_rsh_string)
         if Fill:
             self.to_fill()
             self.years_scale.set_value(int(self.s_year_text.get_text())) #первичная инициализация значения ползунка.
-        self.trends_cmb_box()
+
+        self.trends_cmb_box_load()
+       
         gtk.main()
-    def trends_cmb_box(self):
+    def add_new_rsh_string(self, btn = None):
+        add_btn = gtk.Button()
+        combobox = gtk.combo_box_new_text()
+        add_btn.set_label("   +  ")
+        self.wTree.get_widget("fixed4").put(add_btn, 10,40)
+        self.wTree.get_widget("fixed4").put(combobox,50,40)
+        combobox.append_text("mamamilaramu 2012")
+        self.wTree.get_widget("fixed4").show_all()
+        #print "AA 2", self.get_active_text(self)
+    def get_active_text(self, combobox):
+        model = combobox.get_model()
+        active = combobox.get_active()
+        if active < 0:
+            return None
+        return model[active][0]
+    def trends_cmb_box_load(self):
         #self.trend_list_box.set_wrap_width(1)
         for ar in self.parent.arrows:
             if ar != self.Arrow:
