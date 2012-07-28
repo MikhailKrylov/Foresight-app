@@ -160,6 +160,7 @@ class Trend_dialog(object): #класс описывающий диалог вн
         self.trends_cmb_box()
         gtk.main()
     def trends_cmb_box(self):
+        #self.trend_list_box.set_wrap_width(1)
         for ar in self.parent.arrows:
             if ar != self.Arrow:
                 self.trend_list_box.append_text(ar.name)
@@ -395,13 +396,14 @@ class fsainterface(object):  #Главный класс работы с инте
         #trend_base.delete_db()
    #     self.trend_base.create(rebuilding_key)
     def db_load_to_arrows(self, e1 = 0, e2 = None): #Загрузка данных из ДБ
+        self.trend_base.connect_db()
         for ar in self.arrows:
             del ar
             self.arrows = list()
         trlist = self.trend_base.load()
         for trend in trlist:
             self.arrows.append(arrow(self.area, self.font, trend[1], trend[2],  trend[3], trend[4], trend[5], trend[6], trend[0]))
-        self.trend_base.cursor.close()
+        #self.trend_base.cursor.close()
         self.load_relationship()
         self.rendring()
         #trend_base.refresh()
@@ -409,10 +411,11 @@ class fsainterface(object):  #Главный класс работы с инте
     def db_add_data(self, data_string = 'Name, comment, sourses , power, start_year, year_of_end'):
         self.trend_base.add_data(data_string)
     def load_relationship(self):
-        self.rshps.append(relationship(self, self.arrows[0], self.arrows[1], u'Автобусные астоновки', u'вот такой вот комментарий'))
+        pass
+        #self.rshps.append(relationship(self, self.arrows[0], self.arrows[1], u'Автобусные астоновки', u'вот такой вот комментарий'))
     #Обновляет БД исходя из массива объектов Arrows
     def db_update_from_arrows(self, e1 = None, e2 = None):
-        self.trend_base.connect_db()
+        #self.trend_base.connect_db()
         for arrow_ in self.arrows:
             name ="'"+ arrow_.name + "'"
             sourses ="'" + str(arrow_.sourses) + "'"
@@ -441,5 +444,6 @@ class fsainterface(object):  #Главный класс работы с инте
                    self.trend_base.update_str(u_power, power, name)
                    self.trend_base.update_str(u_syear, s_year, name)
                    self.trend_base.update_str(u_fyear, f_year, name)
+                   self.trend_base.connect.commit()
             
 aa = fsainterface()
