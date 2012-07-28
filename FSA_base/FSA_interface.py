@@ -57,6 +57,7 @@ class Trend_dialog(object): #класс описывающий диалог вн
         random_color = self.parent.area.window.get_colormap().alloc(random.randint(0,65535), random.randint(0,65535), random.randint(0,65535))
         self.palitra.set_current_color(random_color)
         self.last_entry = self.s_year_text
+        self.error_dialog = self.wTree.get_widget('Error_dialog')
         def hide_show(obj, active):
             if active():    self.palitra.show()
             else:   self.palitra.hide()
@@ -79,8 +80,11 @@ class Trend_dialog(object): #класс описывающий диалог вн
                 else:
                     self.years_scale.set_value(int(self.s_year_text.get_text())+1)
                     self.f_year_text.set_text(str(int(self.s_year_text.get_text())+1))
-        def scale_hide(obj_, event):
-            self.years_scale.hide()
+        def object_hide(obj_, event = None):
+            if event:
+                event.hide()
+            else:
+                obj_.hide()
         def set_data(obj_, t_ = None, m_ = None):        
             if self.last_entry == self.f_year_text:
                 if int(self.f_year_text.get_text())>= int(self.s_year_text.get_text())+1:
@@ -147,6 +151,7 @@ class Trend_dialog(object): #класс описывающий диалог вн
         self.ok_btn.connect('clicked', self.ok_click) #обработка нажатия клавиши 'Ок'
         self.cansel_btn.connect('clicked', self.quit_) #обработка нажатия клавиши 'Закрыть'
         self.to_del_btn.connect('clicked', to_delete)
+        self.wTree.get_widget('erd_ok_btn').connect('clicked',object_hide, self.error_dialog)
         if Fill:
             self.to_fill()
             self.years_scale.set_value(int(self.s_year_text.get_text())) #первичная инициализация значения ползунка.
@@ -198,13 +203,18 @@ class Trend_dialog(object): #класс описывающий диалог вн
             for ar in self.parent.arrows:
                 if ar.name == name:
                     plagiat = True
-                    print 'Тенденция с таким названием уже существует'
-                    print 'Возможные варианты названия:'
-                    print name+" продолжение, ", name+" 1, ", name +" "+ str(self.f_year_text.get_text())
+                    self.error_dialog.show()
+                    self.wTree.get_widget('error_lbl1').set_text('Тенденция с таким названием уже существует')
+                    self.wTree.get_widget('error_lbl2').set_text('Возможные варианты названия:')
+                    self.wTree.get_widget('error_lbl3').set_text(name+" продолжение, " + name+" 1, "+ name +" "+ str(self.f_year_text.get_text()))
                     break
         if not plagiat:
             if len(name)<3:
-                print 'Ошибка! Введите название!'
+                self.error_dialog.show()
+                self.wTree.get_widget('error_lbl1').set_text('')
+                self.wTree.get_widget('error_lbl2').set_text('Ошибка! Введите название!')
+                self.wTree.get_widget('error_lbl3').set_text('')
+           
             else:
                 comment_b = self.doc_text.get_buffer()
                 comment =str(comment_b.get_text(comment_b.get_start_iter(), comment_b.get_end_iter()))
@@ -216,7 +226,10 @@ class Trend_dialog(object): #класс описывающий диалог вн
                     int(self.s_year_text.get_text())
                     int(self.f_year_text.get_text())
                 except:
-                    print 'Ошибка: введите корректные даты!'
+                    self.error_dialog.show()
+                    self.wTree.get_widget('error_lbl1').set_text('')
+                    self.wTree.get_widget('error_lbl2').set_text('Ошибка: введите корректные даты!')
+                    self.wTree.get_widget('error_lbl3').set_text('')
                     return 0
                 if  int(self.s_year_text.get_text()) < int(self.f_year_text.get_text()) and int(self.s_year_text.get_text()) in range(2000,2055) and int(self.f_year_text.get_text()) in range(2000,2055): 
                     s_year =str(self.s_year_text.get_text())
@@ -231,7 +244,10 @@ class Trend_dialog(object): #класс описывающий диалог вн
                     self.parent.rendring()
                     self.quit_()
                 else:
-                    print 'Ошибка: введите корректные даты!'
+                    self.error_dialog.show()
+                    self.wTree.get_widget('error_lbl1').set_text('')
+                    self.wTree.get_widget('error_lbl2').set_text('Ошибка: введите корректные даты!')
+                    self.wTree.get_widget('error_lbl3').set_text('')
     def arrow_from_data(self, comment, sourses, f_year, s_year, color):                        
         self.Arrow.comment = comment
         self.Arrow.sourses = sourses
