@@ -172,6 +172,7 @@ class Trend_dialog(object): #класс описывающий диалог вн
         no_btn = self.wTree.get_widget("no_cls_btn")
         def ok_click(obj_, e = None):
             self.Arrow.to_delete = False
+            self.parent.rendring()
             del_wrng.destroy()
         def no_click(obj_, e = None):
             del_wrng.destroy()
