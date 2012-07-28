@@ -7,6 +7,7 @@ Created on 16.07.2012
 
 #подключение библиотек
 import sys, random, pango, time
+from numpy.ma.tests.test_old_ma import eq
 #from curses.ascii import NUL
 try:  
     import pygtk  
@@ -52,12 +53,13 @@ class Trend_dialog(object): #класс описывающий диалог вн
         self.name_str = self.wTree.get_widget('name_str')
         self.to_del_btn = self.wTree.get_widget('to_delete_btn')
         color_sel_chbutn = self.wTree.get_widget('color_selection_on')
+        self.error_dialog = self.wTree.get_widget('Error_dialog')
+        self.trend_list_box = self.wTree.get_widget('trendlist_box')
         self.f_year_text.set_text('2012')
         self.s_year_text.set_text('2000')
         random_color = self.parent.area.window.get_colormap().alloc(random.randint(0,65535), random.randint(0,65535), random.randint(0,65535))
         self.palitra.set_current_color(random_color)
         self.last_entry = self.s_year_text
-        self.error_dialog = self.wTree.get_widget('Error_dialog')
         def hide_show(obj, active):
             if active():    self.palitra.show()
             else:   self.palitra.hide()
@@ -155,7 +157,13 @@ class Trend_dialog(object): #класс описывающий диалог вн
         if Fill:
             self.to_fill()
             self.years_scale.set_value(int(self.s_year_text.get_text())) #первичная инициализация значения ползунка.
+        self.trends_cmb_box()
         gtk.main()
+    def trends_cmb_box(self):
+        for ar in self.parent.arrows:
+            if ar != self.Arrow:
+                self.trend_list_box.append_text(ar.name)
+        self.trend_list_box.set_active(0)
     def to_delete_dialog(self):
         del_wrng = self.wTree.get_widget("Delete_warning")
         del_wrng.show()
