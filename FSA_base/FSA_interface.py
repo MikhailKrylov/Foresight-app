@@ -26,9 +26,6 @@ from Relationship_class import relationship
 from new_trend_dialog import Trend_dialog
 
 
-
-
-
 class Font_selection_window(object): #класс описывающий диалог выбора шрифта
     wTree = None
     def __init__(self, parent):
