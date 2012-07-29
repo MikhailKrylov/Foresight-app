@@ -58,7 +58,10 @@ class Trend_dialog(object): #класс описывающий диалог вн
         self.trend_list_box = self.wTree.get_widget('trendlist_box')
         self.all_add_btn = list() #список всех кнопок для добавления новых связей
         self.all_slctd_trds = list() #Список всех созданных ComboBox с трендами
+        self.all_dis_btn = list() #Список всеъ кнопок "убрать строку"
+        self.selected_trends = list() #Список всех выбранных трендов для установки связей
         self.all_add_btn.append(self.wTree.get_widget('add_new_btn'))
+        self.all_slctd_trds.append(self.trend_list_box)
         self.f_year_text.set_text('2012')
         self.s_year_text.set_text('2000')
         random_color = self.parent.area.window.get_colormap().alloc(random.randint(0,65535), random.randint(0,65535), random.randint(0,65535))
@@ -159,34 +162,67 @@ class Trend_dialog(object): #класс описывающий диалог вн
         self.to_del_btn.connect('clicked', to_delete)
         self.wTree.get_widget('erd_ok_btn').connect('clicked',object_hide, self.error_dialog)
         self.all_add_btn[-1].connect('clicked', self.add_new_rsh_string)
+        self.all_slctd_trds[-1].connect('changed',self.cmb_changed_event)
         if Fill:
             self.to_fill()
             self.years_scale.set_value(int(self.s_year_text.get_text())) #первичная инициализация значения ползунка.
 
-        self.trends_cmb_box_load()
+        self.trends_cmb_box_load(self.all_slctd_trds[-1])
        
         gtk.main()
-    def add_new_rsh_string(self, btn = None):
-        add_btn = gtk.Button()
-        combobox = gtk.combo_box_new_text()
-        add_btn.set_label("   +  ")
-        self.wTree.get_widget("fixed4").put(add_btn, 10,40)
-        self.wTree.get_widget("fixed4").put(combobox,50,40)
-        combobox.append_text("mamamilaramu 2012")
-        self.wTree.get_widget("fixed4").show_all()
-        #print "AA 2", self.get_active_text(self)
-    def get_active_text(self, combobox):
+    
+    def cmb_changed_event(self, combobox, cc = None):
         model = combobox.get_model()
         active = combobox.get_active()
-        if active < 0:
-            return None
-        return model[active][0]
-    def trends_cmb_box_load(self):
+        if active != 0:
+            self.all_add_btn[-1].set_sensitive(1)
+        else:
+            self.all_add_btn[-1].set_sensitive(0)
+    def removie_rsh_string(self, btn = None):
+        adbt = self.all_add_btn[-1]
+        self.all_add_btn.remove(adbt)
+        adbt.destroy()
+        slt= self.all_slctd_trds[-1]
+        self.all_slctd_trds.remove(slt)
+        slt.destroy()
+        dbt = self.all_dis_btn[-1]
+        self.all_dis_btn.remove(dbt)
+        dbt.destroy()
+        self.all_add_btn[-1].set_sensitive(1)
+        self.all_slctd_trds[-1].set_sensitive(1)
+        if len(self.all_dis_btn):
+            self.all_dis_btn[-1].set_sensitive(1)
+    def add_new_rsh_string(self, btn = None):
+        self.all_add_btn[-1].set_sensitive(0)
+        self.all_slctd_trds[-1].set_sensitive(0)
+        if len(self.all_dis_btn):
+            self.all_dis_btn[-1].set_sensitive(0)
+        min_btn = gtk.Button("  -  ")
+        add_btn = gtk.Button("  +  ")
+        add_btn.set_sensitive(0)
+        combobox = gtk.combo_box_new_text()
+        py = self.all_add_btn[-1].allocation.y
+        self.wTree.get_widget("fixed4").put(add_btn, 10,py+35)
+        self.wTree.get_widget("fixed4").put(combobox,50,py+35)
+        combobox.append_text("Выберите тренд:                               ")
+        self.trends_cmb_box_load(combobox)
+        self.wTree.get_widget("fixed4").put(min_btn, 310, py+35)
+       
+        self.all_dis_btn.append(min_btn)
+        self.all_add_btn.append(add_btn)
+        self.all_slctd_trds.append(combobox)
+        self.all_add_btn[-1].connect('clicked', self.add_new_rsh_string)
+        self.all_dis_btn[-1].connect('clicked', self.removie_rsh_string)
+        self.all_slctd_trds[-1].connect('changed',self.cmb_changed_event)
+            
+        self.wTree.get_widget("fixed4").show_all()
+        #print "AA 2", self.get_active_text(self)
+    def trends_cmb_box_load(self, cmb_box):
         #self.trend_list_box.set_wrap_width(1)
         for ar in self.parent.arrows:
-            if ar != self.Arrow:
-                self.trend_list_box.append_text(ar.name)
-        self.trend_list_box.set_active(0)
+            if ar != self.Arrow and not ar in self.selected_trends:
+                cmb_box.append_text(ar.name)
+        cmb_box.set_active(0)
     def to_delete_dialog(self):
         del_wrng = self.wTree.get_widget("Delete_warning")
         del_wrng.show()

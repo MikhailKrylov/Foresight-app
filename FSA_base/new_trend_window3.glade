@@ -732,7 +732,7 @@
                                 <child>
                                   <widget class="GtkComboBox" id="trendlist_box">
                                     <property name="width_request">250</property>
-                                    <property name="height_request">35</property>
+                                    <property name="height_request">30</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="items" translatable="yes">Выберите тренд:</property>
@@ -746,7 +746,7 @@
                                   <widget class="GtkButton" id="add_new_btn">
                                     <property name="label" translatable="yes">+</property>
                                     <property name="width_request">35</property>
-                                    <property name="height_request">35</property>
+                                    <property name="height_request">30</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
