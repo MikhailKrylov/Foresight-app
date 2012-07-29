@@ -311,13 +311,13 @@ class Trend_dialog(object): #класс описывающий диалог вн
                     self.selected_trends[1].append(0)
                 else:
                     self.selected_trends[1].append(1)
-        for r_indx in len(self.selected_trends[0]):
+        for r_indx in range(len(self.selected_trends[0])):
             for ar in self.parent.arrows:
                 if ar.name == self.selected_trends[0][r_indx]:
                     f_tr = ar
                     break
             rsh = relationship(self.parent, f_tr, self.Arrow, self.selected_trends[1][r_indx], self.selected_trends[2][r_indx])
-            self.parent.self.rshps.append(rsh)
+            self.parent.rshps.append(rsh)
     def ok_click(self, e_arg):
         self.save_rshs()
         if self.to_del_btn.get_active():
