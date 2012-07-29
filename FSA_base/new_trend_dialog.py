@@ -302,8 +302,15 @@ class Trend_dialog(object): #класс описывающий диалог вн
         self.palitra.set_current_color(trend.color)
     def quit_(self, Ea = None, Ba = None):
         self.window.destroy()
+    def get_ind_from_text(self, text, cmbbox):
+        model = cmbbox.get_model()
+        for idex in range(len(model)):
+            if model[idex][0] == text:
+                return idex
+        return None
     def save_rshs(self):
-        if self.get_active_text(self.all_slctd_trds[-1]) != "Выберите тренд:                               ":
+        slctd_txt = self.get_active_text(self.all_slctd_trds[-1])
+        if self.get_ind_from_text(slctd_txt,self.all_slctd_trds[-1])!= 0:
                 self.selected_trends[0].append(self.get_active_text(self.all_slctd_trds[-1]))
                 comment_b = self.rsh_comment.get_buffer()
                 comment = str(comment_b.get_text(comment_b.get_start_iter(), comment_b.get_end_iter()))    

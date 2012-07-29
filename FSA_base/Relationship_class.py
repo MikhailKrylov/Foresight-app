@@ -48,4 +48,23 @@ class relationship(object):
         x2 = self.trend2.s_point + (self.trend2.f_point-self.trend2.s_point)/2
         self.coord = (x1,y1,x2,y2)
         drawable.draw_line(gc, x1, y1, x2, y2)
+    def mouse_motion_on(self): #Действия при наведении мыши
+        x1,y1,x2,y2 = self.coord
+        drawable = self.area.window
+        color = self.area.window.get_colormap().alloc(55535, 25535, 535)
+        gc = drawable.new_gc()
+        gc.foreground = color
+        drawable.draw_arc(gc, True, x1-8, y1+8, 8, 8, 0, 360*64)
+        drawable.draw_arc(gc, True, x2-5, y2-10, 8, 8, 0, 360*64)
+        self.get_mouse_motion = True
+    def mouse_motion_off(self):
+        x1,y1,x2,y2 = self.coord
+       ##
+        drawable = self.area.window
+        bgcolor = self.area.window.get_colormap().alloc(62194, 61937, 61680)
+        gc = drawable.new_gc()
+        gc.foreground = bgcolor
+        drawable.draw_arc(gc, True, x1-8, y1+8, 8, 8, 0, 360*64)
+        drawable.draw_arc(gc, True, x2-5, y2-10, 8, 8, 0, 360*64)
+        self.get_mouse_motion = False
     

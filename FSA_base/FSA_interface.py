@@ -74,14 +74,21 @@ class fsainterface(object):  #Главный класс работы с инте
         self.db_name = "fs_db2.db" #Название подключаемой БД
         self.db_visual(0) #подключение БД к интерфейсу 
         def motion_notify(ruler, event): #обработка движения мыши по зоне рисования
-            for arrow in self.arrows:
-                if event.y in range(arrow.y-int(arrow.font.split(" ")[-1])-10, arrow.y+5):
-                    if event.x in range(arrow.s_point, arrow.f_point):
-                        arrow.mouse_motion_on()
+            if not self.rsh_on.get_active():
+                for arrow in self.arrows:
+                    if event.y in range(arrow.y-int(arrow.font.split(" ")[-1])-10, arrow.y+5):
+                        if event.x in range(arrow.s_point, arrow.f_point):
+                            arrow.mouse_motion_on()
+                        else:
+                            arrow.mouse_motion_off()
                     else:
                         arrow.mouse_motion_off()
-                else:
-                    arrow.mouse_motion_off()
+            else:
+                for rsh in self.rshps:
+                    if event.x in range(min(rsh.coord[0], rsh.coord[2]), max(rsh.coord[0], rsh.coord[2]))  and event.y in range(min(rsh.coord[1], rsh.coord[3]), max(rsh.coord[1], rsh.coord[3])):
+                        rsh.mouse_motion_on()
+                    else:
+                        rsh.mouse_motion_off()
             status_lbl.set_text(str(ruler.get_range()[2])[:4])   
             return ruler.emit('motion_notify_event', event)
         self.area.connect_object('motion_notify_event', motion_notify, hruler1) 
@@ -89,22 +96,14 @@ class fsainterface(object):  #Главный класс работы с инте
         def mouseclick(Empty_arg,event = None): #обработка щелчка мыши по зоне рисования
          #   if not self.rsh_points[0][1]:
          #       print event
-            for arrow in self.arrows:
-                if arrow.get_mouse_motion:
-                    if not self.rsh_on.get_active():
-                        edit_dlg = Trend_dialog(self, arrow, True)
-                    else:
-                        edit_dlg = edit_rsh_dialog(self, self.rshps[-1])
-                  #  else:
-                  #      drawable = self.area.window
-                  #      gc = drawable.new_gc()
-                  #      gc.foreground = self.area.window.get_colormap().alloc(0, 55535, 0)                 
-                  #      drawable.draw_line(gc, int(x), 0, int(x), heigth) 
-             #   if self.trand_on.get_active():
-             #       drawable = self.area.window
-             #       gc = drawable.new_gc()
-             #       gc.foreground = self.area.window.get_colormap().alloc(0, 55535, 0)                 
-             # #      drawable.draw_line(gc, int(x), 0, int(x), heigth) 
+            if not self.rsh_on.get_active():
+                for arrow in self.arrows:
+                    if arrow.get_mouse_motion:
+                            edit_dlg = Trend_dialog(self, arrow, True)
+            else:
+                for rsh in self.rshps:
+                    if rsh.get_mouse_motion:
+                            edit_dlg = edit_rsh_dialog(self, self.rshps[-1])            
     
             #print  e1[2]-60,  new_rect.width
         def btn_switch(obj,scd =None):
