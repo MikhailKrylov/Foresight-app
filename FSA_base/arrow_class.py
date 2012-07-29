@@ -49,7 +49,7 @@ class arrow(object):
         gc = drawable.new_gc() 
         #цвет задается в интервале от 0 до 65535
         gc.foreground = self.color
-        gc.line_width = abs(int(self.power))+1  
+        gc.line_width = 2
         if self.to_delete:
             tx = x1+5
             while tx <= x2:
@@ -58,12 +58,22 @@ class arrow(object):
                 drawable.draw_line(gc, x1, self.y-3, tx, self.y+3)
                 x1 = tx+5
                 tx = x1+5
-        elif self.power > 0:
+        elif self.power == 1:
             drawable.draw_line(gc, x1, self.y, x2, self.y)
-        elif self.power <0:
+        elif self.power == 2:
+            drawable.draw_line(gc, x1, self.y+2, x2-3, self.y+2)
+            drawable.draw_line(gc, x1, self.y-2, x2-3, self.y-2)
+        elif self.power ==-1:
             tx = x1+abs(int(self.power))*5
             while tx <= x2:
                 drawable.draw_line(gc, x1, self.y, tx, self.y)
+                x1 = tx+abs(int(self.power))*5
+                tx = x1+abs(int(self.power))*5
+        elif self.power ==-2:
+            tx = x1+abs(int(self.power))*5
+            while tx <= x2:
+                drawable.draw_line(gc, x1, self.y-2, tx, self.y-2)
+                drawable.draw_line(gc, x1, self.y+2, tx, self.y+2)
                 x1 = tx+abs(int(self.power))*5
                 tx = x1+abs(int(self.power))*5
         else:

@@ -28,16 +28,20 @@ class relationship(object):
         self.area = self.parent.area
         y1 = self.trend1.y
         y2 = max(-1, self.trend2.y)
-        x1 = self.trend1.s_point + (self.trend1.f_point-self.trend1.s_point)/2
-        x2 = self.trend2.s_point + (self.trend2.f_point-self.trend2.s_point)/2
-        self.coord = (x1,y1,x2,y2)
         if type == 1: 
             self.color  = self.area.window.get_colormap().alloc(0, 65535, 0)
         else:
             self.color  = self.area.window.get_colormap().alloc(0, 0, 65535)
+        x1 = self.trend1.s_point + (self.trend1.f_point-self.trend1.s_point)/2
+        x2 = self.trend2.s_point + (self.trend2.f_point-self.trend2.s_point)/2
+        self.coord = (x1,y1,x2,y2)
     def __del__(self):
         pass
     def rendring(self):
+        if type == 1: 
+            self.color  = self.area.window.get_colormap().alloc(0, 65535, 0)
+        else:
+            self.color  = self.area.window.get_colormap().alloc(0, 0, 65535)
         drawable = self.area.window
         gc = drawable.new_gc() 
         gc.foreground = self.color

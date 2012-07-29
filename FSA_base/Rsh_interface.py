@@ -28,8 +28,10 @@ class edit_rsh_dialog(object):
         self.ed_res_rb = self.wTree.get_widget('ed_res_rb')
         self.delete_btn = self.wTree.get_widget('del_btn')
         self.comment_txt = self.wTree.get_widget('comment_txt')
+        self.ok_btn = self.wTree.get_widget('ok_btn')
         self.cansel_btn.connect('clicked', self.quit_)
         self.delete_btn.connect('clicked', self.del_rsh)
+        self.ok_btn.connect('clicked', self.save_)
         self.fill = Fill
         if Fill:
             self.trends_cmb_box_load(self.trend_box1, self.rsh.trend1)
@@ -63,6 +65,24 @@ class edit_rsh_dialog(object):
         for ar in self.parent.arrows:
             cmb_box.append_text(ar.name)
         cmb_box.set_active(self.get_ind_from_text(trend, cmb_box))
-        
+    def save_(self, obj = None):
+        if self.fill:
+            pr = [False, False]
+            for ar in self.parent.arrows:
+                if self.get_active_text(self.trend_box1) == ar.name:
+                    self.rsh.trend1 = ar
+                    pr[0] = True
+                elif self.get_active_text(self.trend_box2) == ar.name:
+                    self.rsh.trend2 = ar
+                    pr[1] = True
+            if pr[0] and pr[1]:
+                comment_b = self.comment_txt.get_buffer()
+                comment =str(comment_b.get_text(comment_b.get_start_iter(), comment_b.get_end_iter()))
+                self.rsh.comment = comment
+                self.rsh.type = self.ed_res_rb.get_active()
+                self.parent.rendring()
+                self.quit_()
+            else:
+                print "Выберите корректные значения."
     def quit_(self,e = None):
         self.window.destroy()
