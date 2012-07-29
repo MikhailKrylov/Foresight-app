@@ -16,7 +16,7 @@ from arrow_class import arrow
 from Relationship_class import relationship
 class edit_rsh_dialog(object):
     wTree = None
-    def __init__(self, parent, rsh = None):
+    def __init__(self, parent, rsh = None, Fill = True):
         self.rsh = rsh
         self.parent = parent #ссылка на 'родителя'
         self.wTree = gtk.glade.XML( 'rsh_edit.glade' ) #подключение glade оболочки
@@ -27,12 +27,18 @@ class edit_rsh_dialog(object):
         self.cont_rb = self.wTree.get_widget('cont_prev_rb')
         self.ed_res_rb = self.wTree.get_widget('ed_res_rb')
         self.delete_btn = self.wTree.get_widget('del_btn')
+        self.comment_txt = self.wTree.get_widget('comment_txt')
         self.cansel_btn.connect('clicked', self.quit_)
         self.delete_btn.connect('clicked', self.del_rsh)
-        self.trends_cmb_box_load(self.trend_box1, self.rsh.trend1)
-        self.trends_cmb_box_load(self.trend_box2, self.rsh.trend2)
-        self.type = self.rsh.type
-        self.ed_res_rb.set_active(self.type)
+        self.fill = Fill
+        if Fill:
+            self.trends_cmb_box_load(self.trend_box1, self.rsh.trend1)
+            self.trends_cmb_box_load(self.trend_box2, self.rsh.trend2)
+            self.type = self.rsh.type
+            self.ed_res_rb.set_active(self.type)
+            comment_buffer = gtk.TextBuffer(None)
+            comment_buffer.set_text(self.rsh.comment)
+            self.comment_txt.set_buffer(comment_buffer)
         gtk.main()
     def get_ind_from_text(self, trend, cmbbox):
         model = cmbbox.get_model()

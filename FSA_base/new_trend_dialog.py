@@ -325,7 +325,9 @@ class Trend_dialog(object): #класс описывающий диалог вн
                     f_tr = ar
                     break
             rsh = relationship(self.parent, f_tr, self.Arrow, self.selected_trends[1][r_indx], self.selected_trends[2][r_indx])
+            rsh.comment = self.selected_trends[2][r_indx]
             self.parent.rshps.append(rsh)
+            
     def ok_click(self, e_arg):
         if self.to_del_btn.get_active():
             self.Arrow.to_delete = True
