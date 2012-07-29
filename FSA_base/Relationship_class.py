@@ -22,9 +22,15 @@ class relationship(object):
         self.trend1 = first_trend
         self.trend2 = second_trend
         self.type = type
+        self.to_delete = False
         self.comment = comment
         self.parent = parent
         self.area = self.parent.area
+        y1 = self.trend1.y
+        y2 = self.trend2.y
+        x1 = self.trend1.s_point + (self.trend1.f_point-self.trend1.s_point)/2
+        x2 = self.trend2.s_point + (self.trend2.f_point-self.trend2.s_point)/2
+        self.coord = (x1,y1,x2,y2)
         if type == 1: 
             self.color  = self.area.window.get_colormap().alloc(0, 65535, 0)
         else:
@@ -35,9 +41,11 @@ class relationship(object):
         drawable = self.area.window
         gc = drawable.new_gc() 
         gc.foreground = self.color
-        gc.line_width = 2  
+        gc.line_width = 1  
         y1 = self.trend1.y
         y2 = self.trend2.y
         x1 = self.trend1.s_point + (self.trend1.f_point-self.trend1.s_point)/2
         x2 = self.trend2.s_point + (self.trend2.f_point-self.trend2.s_point)/2
+        self.coord = (x1,y1,x2,y2)
         drawable.draw_line(gc, x1, y1, x2, y2)
+    

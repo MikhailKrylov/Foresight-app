@@ -278,13 +278,15 @@ class Trend_dialog(object): #класс описывающий диалог вн
     def to_fill(self):
         trend = self.Arrow
         if trend.power>0:
+            self.sp_rbtn.set_active(1)
             if trend.power == 2:
                 self.fs_chk.set_active(1)
-            self.sp_rbtn.set_active(1)
+            
         elif trend.power<0:
+            self.mp_rbtn.set_active(1)
             if trend.power == -2:
                 self.fs_chk2.set_active(1)
-            self.mp_rbtn.set_active(1)
+            
         else:
             self.up_rbtn.set_active(1)
         self.name_str.set_text(trend.name)
@@ -318,7 +320,6 @@ class Trend_dialog(object): #класс описывающий диалог вн
             rsh = relationship(self.parent, f_tr, self.Arrow, self.selected_trends[1][r_indx], self.selected_trends[2][r_indx])
             self.parent.rshps.append(rsh)
     def ok_click(self, e_arg):
-        self.save_rshs()
         if self.to_del_btn.get_active():
             self.Arrow.to_delete = True
         plagiat = False # проверка на наличие тренда с таким названием
@@ -358,14 +359,19 @@ class Trend_dialog(object): #класс описывающий диалог вн
                 if  int(self.s_year_text.get_text()) < int(self.f_year_text.get_text()) and int(self.s_year_text.get_text()) in range(2000,2055) and int(self.f_year_text.get_text()) in range(2000,2055): 
                     s_year =str(self.s_year_text.get_text())
                     f_year =str(self.f_year_text.get_text())
-                    power = str(self.power)
+                    power = self.power
                     color = self.palitra.get_current_color()
                     if self.Fill:
                         self.arrow_from_data(comment, sourses, f_year, s_year, color)
+                        if len(self.selected_trends[0]):
+                            self.save_rshs()
                     else:
                         self.Arrow = arrow(self.parent.area, self.parent.font, name, comment, sourses, power, s_year, f_year)
                         self.parent.arrows.append(self.Arrow)
+                        if len(self.selected_trends[0]):
+                            self.save_rshs()
                     self.parent.rendring()
+                    
                     self.quit_()
                 else:
                     self.error_dialog.show()

@@ -23,6 +23,7 @@ import db_interface #подключение модуля работы с баз�
 from arrow_class import arrow #Подключение класса 'стрелки'
 from Relationship_class import relationship
 from new_trend_dialog import Trend_dialog
+from Rsh_interface import edit_rsh_dialog
 
 
 class Font_selection_window(object): #класс описывающий диалог выбора шрифта
@@ -92,6 +93,8 @@ class fsainterface(object):  #Главный класс работы с инте
                 if arrow.get_mouse_motion:
                     if not self.rsh_on.get_active():
                         edit_dlg = Trend_dialog(self, arrow, True)
+                    else:
+                        edit_dlg = edit_rsh_dialog(self, self.rshps[-1])
                   #  else:
                   #      drawable = self.area.window
                   #      gc = drawable.new_gc()
