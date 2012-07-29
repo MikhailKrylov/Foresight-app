@@ -10,7 +10,6 @@ Created on 16.07.2012
 
 #подключение библиотек
 import sys, random, pango, time
-from numpy.ma.tests.test_old_ma import eq
 #from curses.ascii import NUL
 try:  
     import pygtk  
