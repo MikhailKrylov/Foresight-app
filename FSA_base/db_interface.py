@@ -47,7 +47,16 @@ class base: #главный класс для работы с базой дан�
             traceback.print_exc()
             print u"Ошибка: Невозможно добавить данные в базу."
     def load_rsh(self):
-        pass
+        try:
+            self.cursor.execute('SELECT * FROM relationships')
+            trandlist = self.cursor.fetchall()  
+            strret =  "\n".join(map(lambda x: "\n" +"; ".join(map(str, x)), trandlist))
+            
+            return trandlist
+            #print(strr)
+        except:
+            traceback.print_exc()
+            print "Ошибка: Не возможно вывести базу данных"
     def upd_rsh(self, trend1,trend2,comment,type):
         self.cursor.execute('UPDATE relationships SET type = '+type+ ' WHERE base_trend LIKE '+trend1+ 'AND second_trend LIKE '+trend2)
         self.cursor.execute('UPDATE relationships SET comment = '+comment+ ' WHERE base_trend LIKE '+trend1+ 'AND second_trend LIKE '+trend2)

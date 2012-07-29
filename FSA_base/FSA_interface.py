@@ -182,7 +182,6 @@ class fsainterface(object):  #Главный класс работы с инте
     def db_add_data(self, data_string = 'Name, comment, sourses , power, start_year, year_of_end'):
         self.trend_base.add_data(data_string)
     def db_load_from_rshps(self):
-
         for rsh in self.rshps:
             if not rsh.to_delete:
                 plagiat = [False, False]
@@ -196,9 +195,22 @@ class fsainterface(object):  #Главный класс работы с инте
                 else:
                     trend1_name, trend2_name = fnd
                     self.trend_base.upd_rsh(trend1_name, trend2_name, comment, type)
-                    
+    def search_arrow(self, name):
+        for ar in self.arrows:
+            if ar.name == name:
+                return ar                
     def load_relationship(self):
-        pass
+        self.trend_base.connect_db()
+        for rsh in self.rshps:
+            del rsh
+            self.rshps = list()
+        rshlist = self.trend_base.load_rsh()
+        for rshl in rshlist:
+            first_trend = self.search_arrow(rshl[1])
+            second_trend = self.search_arrow(rshl[2])
+            self.rshps.append(relationship(self, first_trend, second_trend, rshl[4], rshl[3]))
+        #self.trend_base.cursor.close()
+        self.rendring()
         #self.rshps.append(relationship(self, self.arrows[0], self.arrows[1], u'Автобусные астоновки', u'вот такой вот комментарий'))
     #Обновляет БД исходя из массива объектов Arrows
     def db_update_from_arrows(self, e1 = None, e2 = None):
