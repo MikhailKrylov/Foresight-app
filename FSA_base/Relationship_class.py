@@ -18,14 +18,17 @@ class relationship(object):
     '''
 
 
-    def __init__(self, parent, first_trend, second_trend, name, comment, pos = None):
+    def __init__(self, parent, first_trend, second_trend, type, comment, pos = None):
         self.trend1 = first_trend
         self.trend2 = second_trend
-        self.name = name
+        self.type = type
         self.comment = comment
         self.parent = parent
         self.area = self.parent.area
-        self.color  = self.area.window.get_colormap().alloc(random.randint(0,65535), random.randint(0,65535), random.randint(0,65535))
+        if type == 1: 
+            self.color  = self.area.window.get_colormap().alloc(0, 65535, 0)
+        else:
+            self.color  = self.area.window.get_colormap().alloc(0, 0, 65535)
     def __del__(self):
         pass
     def rendring(self):

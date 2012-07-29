@@ -56,11 +56,15 @@ class Trend_dialog(object): #класс описывающий диалог вн
         color_sel_chbutn = self.wTree.get_widget('color_selection_on')
         self.error_dialog = self.wTree.get_widget('Error_dialog')
         self.trend_list_box = self.wTree.get_widget('trendlist_box')
-        self.all_add_btn = list() #список всех кнопок для добавления новых связей
+        self.rsh_ctinue_rb = self.wTree.get_widget('cont_rb')
+        self.rsh_res_rb = self.wTree.get_widget('e_res_rb')
+        self.rsh_comment = self.wTree.get_widget('rsh_comment')
+        self.all_add_btn = [self.wTree.get_widget('add_new_btn')]#список всех кнопок для добавления новых связей
         self.all_slctd_trds = list() #Список всех созданных ComboBox с трендами
         self.all_dis_btn = list() #Список всеъ кнопок "убрать строку"
-        self.selected_trends = list() #Список всех выбранных трендов для установки связей
-        self.all_add_btn.append(self.wTree.get_widget('add_new_btn'))
+        self.selected_trends = [list(), list(), list()] #Список всех выбранных трендов для установки связей
+        
+        
         self.all_slctd_trds.append(self.trend_list_box)
         self.f_year_text.set_text('2012')
         self.s_year_text.set_text('2000')
@@ -179,6 +183,16 @@ class Trend_dialog(object): #класс описывающий диалог вн
         else:
             self.all_add_btn[-1].set_sensitive(0)
     def removie_rsh_string(self, btn = None):
+        if self.selected_trends[1][-1] == 0:
+            self.rsh_ctinue_rb.set_sensitive(1)
+            self.rsh_ctinue_rb.set_active(1)
+        else:
+            self.rsh_res_rb.set_active(1)
+        rsh_cm_buffer = gtk.TextBuffer(None)
+        rsh_cm_buffer.set_text(self.selected_trends[2][-1])
+        self.rsh_comment.set_buffer(rsh_cm_buffer)
+        self.selected_trends[0] = self.selected_trends[1][:-1]
+        self.selected_trends[1] = self.selected_trends[1][:-1]
         adbt = self.all_add_btn[-1]
         self.all_add_btn.remove(adbt)
         adbt.destroy()
@@ -197,6 +211,19 @@ class Trend_dialog(object): #класс описывающий диалог вн
         self.all_slctd_trds[-1].set_sensitive(0)
         if len(self.all_dis_btn):
             self.all_dis_btn[-1].set_sensitive(0)
+        self.selected_trends[0].append(self.get_active_text(self.all_slctd_trds[-1]))
+        if self.rsh_ctinue_rb.get_active():
+            self.selected_trends[1].append(0)
+            self.rsh_ctinue_rb.set_sensitive(0)
+            self.rsh_res_rb.set_active(1)
+        else:
+            self.selected_trends[1].append(1)
+        comment_b = self.rsh_comment.get_buffer()
+        comment =str(comment_b.get_text(comment_b.get_start_iter(), comment_b.get_end_iter()))    
+        self.selected_trends[2].append(comment)
+        rsh_cm_buffer = gtk.TextBuffer(None)
+        rsh_cm_buffer.set_text('')
+        self.rsh_comment.set_buffer(rsh_cm_buffer)
         min_btn = gtk.Button("  -  ")
         add_btn = gtk.Button("  +  ")
         add_btn.set_sensitive(0)
@@ -207,7 +234,6 @@ class Trend_dialog(object): #класс описывающий диалог вн
         combobox.append_text("Выберите тренд:                               ")
         self.trends_cmb_box_load(combobox)
         self.wTree.get_widget("fixed4").put(min_btn, 310, py+35)
-       
         self.all_dis_btn.append(min_btn)
         self.all_add_btn.append(add_btn)
         self.all_slctd_trds.append(combobox)
@@ -217,10 +243,23 @@ class Trend_dialog(object): #класс описывающий диалог вн
             
         self.wTree.get_widget("fixed4").show_all()
         #print "AA 2", self.get_active_text(self)
+        pp = []
+        for ar in self.parent.arrows:
+            if ar != self.Arrow and not (ar.name in self.selected_trends[0]):
+                pp.append(ar.name)
+        if len(pp)<2:
+            self.all_add_btn[-1].hide()
+    
+    def get_active_text(self,combobox):
+        model = combobox.get_model()
+        active = combobox.get_active()
+        if active < 0:
+            return None
+        return model[active][0]
     def trends_cmb_box_load(self, cmb_box):
         #self.trend_list_box.set_wrap_width(1)
         for ar in self.parent.arrows:
-            if ar != self.Arrow and not ar in self.selected_trends:
+            if ar != self.Arrow and not (ar.name in self.selected_trends[0]):
                 cmb_box.append_text(ar.name)
         cmb_box.set_active(0)
     def to_delete_dialog(self):
@@ -262,7 +301,25 @@ class Trend_dialog(object): #класс описывающий диалог вн
         self.palitra.set_current_color(trend.color)
     def quit_(self, Ea = None, Ba = None):
         self.window.destroy()
+    def save_rshs(self):
+        if self.get_active_text(self.all_slctd_trds[-1]) != "Выберите тренд:                               ":
+                self.selected_trends[0].append(self.get_active_text(self.all_slctd_trds[-1]))
+                comment_b = self.rsh_comment.get_buffer()
+                comment = str(comment_b.get_text(comment_b.get_start_iter(), comment_b.get_end_iter()))    
+                self.selected_trends[2].append(comment)
+                if self.rsh_ctinue_rb.get_active():
+                    self.selected_trends[1].append(0)
+                else:
+                    self.selected_trends[1].append(1)
+        for r_indx in len(self.selected_trends[0]):
+            for ar in self.parent.arrows:
+                if ar.name == self.selected_trends[0][r_indx]:
+                    f_tr = ar
+                    break
+            rsh = relationship(self.parent, f_tr, self.Arrow, self.selected_trends[1][r_indx], self.selected_trends[2][r_indx])
+            self.parent.self.rshps.append(rsh)
     def ok_click(self, e_arg):
+        self.save_rshs()
         if self.to_del_btn.get_active():
             self.Arrow.to_delete = True
         plagiat = False # проверка на наличие тренда с таким названием
