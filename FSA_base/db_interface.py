@@ -13,12 +13,13 @@ class base: #главный класс для работы с базой дан�
         try:
             if key == 1:
                 self.refresh_db()
-            #таблица трендов:
-            self.cursor.execute('CREATE TABLE trends (id INTEGER PRIMARY KEY, '+self.type_str+')')
             #таблица отношений:
-            self.cursor.execute('CREATE TABLE relationships (id INTEGER PRIMARY KEY, rsh_name TEXT(100),  base_trend TEXT(100), second_trend TEXT(100), comment TEXT(300), type INTEGER(2))')
+            self.cursor.execute('CREATE TABLE relationships (id INTEGER PRIMARY KEY,  base_trend TEXT(100), second_trend TEXT(100), comment TEXT(300), type INTEGER(2))')
             #таблица настроек:
             self.cursor.execute('CREATE TABLE properties (id INTEGER PRIMARY KEY, base_trend TEXT(100), color TEXT(20), position INTEGER(5), type INTEGET(2)')
+            #таблица трендов:
+            self.cursor.execute('CREATE TABLE trends (id INTEGER PRIMARY KEY, '+self.type_str+')')
+          
             
         except:
             traceback.print_exc()
@@ -36,9 +37,10 @@ class base: #главный класс для работы с базой дан�
             traceback.print_exc()
             print "Ошибка: Не возможно вывести базу данных"
         #self.cursor.close()
-    def add_rsh(self, data_str):#добавление нового элемента в таблицу отношений
+    def add_rsh(self, trend1, trend2, comment, type):#добавление нового элемента в таблицу отношений
+        data_str  = trend1 + u', '+ trend2+ u', ' + comment+u', '+ type
         try:
-            self.cursor.execute('INSERT INTO relationships (id, rsh_name, base_trend, second_trend, comment, type) VALUES(NULL,'+data_str+')')
+            self.cursor.execute('INSERT INTO relationships (id, base_trend, second_trend, comment, type) VALUES(NULL,'+data_str+')')
             self.connect.commit()
             
         except:
@@ -46,6 +48,9 @@ class base: #главный класс для работы с базой дан�
             print u"Ошибка: Невозможно добавить данные в базу."
     def load_rsh(self):
         pass
+    def upd_rsh(self, trend1,trend2,comment,type):
+        self.cursor.execute('UPDATE relationships SET type = '+type+ ' WHERE base_trend LIKE '+trend1+ 'AND second_trend LIKE '+trend2)
+        self.cursor.execute('UPDATE relationships SET comment = '+comment+ ' WHERE base_trend LIKE '+trend1+ 'AND second_trend LIKE '+trend2)
     def add_data(self, data_str): #Добавление нового элемента в таблицу трендов
         try:
             self.cursor.execute('INSERT INTO trends (id, trend_name, comment, sources, power, s_point, f_point) VALUES(NULL,'+data_str+')')
@@ -66,6 +71,17 @@ class base: #главный класс для работы с базой дан�
     def connect_db(self): #Соединение с созданной БД.
         self.connect = sqlite.connect(self.name)
         self.cursor = self.connect.cursor()
+    def rsh_verty(self, trend1_name, trend2_name, type):
+        self.cursor.execute('SELECT * FROM relationships WHERE base_trend LIKE '+trend1_name +' AND second_trend LIKE '+trend2_name+ 'AND type LIKE '+ type)
+        v1 = self.cursor.fetchall()
+        self.cursor.execute('SELECT * FROM relationships WHERE base_trend LIKE '+trend2_name +' AND second_trend LIKE '+trend1_name+ 'AND type LIKE '+ type)
+        v2 = self.cursor.fetchall()
+        if len(v1):
+            return (trend1_name,  trend2_name)
+        if len(v2):
+            return (trend2_name, trend1_name)
+        return False
+    
     def search_string(self, key_value, key = "trend_name", table = "trends" ):
        # self.cursor = self.connect.cursor()
         self.cursor.execute('SELECT * FROM ' +table+ ' WHERE '+key+' LIKE '+key_value)

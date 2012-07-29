@@ -85,7 +85,7 @@ class fsainterface(object):  #Главный класс работы с инте
                         arrow.mouse_motion_off()
             else:
                 for rsh in self.rshps:
-                    if event.x in range(min(rsh.coord[0], rsh.coord[2]), max(rsh.coord[0], rsh.coord[2]))  and event.y in range(min(rsh.coord[1], rsh.coord[3]), max(rsh.coord[1], rsh.coord[3])):
+                    if event.x in range(min(rsh.coord[0], rsh.coord[2]), max(rsh.coord[0], rsh.coord[2]))  and event.y in range(min(rsh.coord[1], rsh.coord[3])-1, max(rsh.coord[1], rsh.coord[3])+1):
                         rsh.mouse_motion_on()
                     else:
                         rsh.mouse_motion_off()
@@ -121,10 +121,10 @@ class fsainterface(object):  #Главный класс работы с инте
         self.exit_menu_btn.connect('activate', self.quit)
         gtk.main()
         
-    def open_font_dialog(self, widget, Emty_arg):#вызов диалога выбора шрифта
+    def open_font_dialog(self, widget = None, Emty_arg = None):#вызов диалога выбора шрифта
         fsw = Font_selection_window(self) 
 
-    def new_trend_dialog_open(self,Emty_arg): #Вызов диалога 'новый тренд'
+    def new_trend_dialog_open(self,Emty_arg = None): #Вызов диалога 'новый тренд'
         ntw = Trend_dialog(self)
     def quit(self, widget, ar1 = None): #выход (уничтожение окна)
         self.trend_base.cursor.close()
@@ -133,11 +133,19 @@ class fsainterface(object):  #Главный класс работы с инте
     def rendring(self):
         self.area.window.clear()
         hg = self.area.get_allocation().height
-        n = len(self.arrows)
+        
+        cont_list = list()
+        for rsh in self.rshps:
+            if rsh.type == 0:
+                cont_list.append(rsh)
+        n = len(self.arrows)-len(cont_list)
         y = 50
         k = hg/(n+1)
         self.render_v_lines()
         for ar in self.arrows:
+            for rs in cont_list:
+                if rs.trend1 == ar:
+                    y = rs.trend2.y
             ar.rendring(y)
             y+=k
         for rsh in self.rshps:
@@ -173,12 +181,29 @@ class fsainterface(object):  #Главный класс работы с инте
     #Добавляет строку в БД
     def db_add_data(self, data_string = 'Name, comment, sourses , power, start_year, year_of_end'):
         self.trend_base.add_data(data_string)
+    def db_load_from_rshps(self):
+
+        for rsh in self.rshps:
+            if not rsh.to_delete:
+                plagiat = [False, False]
+                trend1_name ="'" + rsh.trend1.name + "'"
+                trend2_name ="'" + rsh.trend2.name + "'"
+                type = str(rsh.type)
+                comment ="'"+ rsh.comment + "'"
+                fnd = self.trend_base.rsh_verty(trend1_name, trend2_name, type)
+                if not fnd:
+                    self.trend_base.add_rsh(trend1_name, trend2_name, comment, type)
+                else:
+                    trend1_name, trend2_name = fnd
+                    self.trend_base.upd_rsh(trend1_name, trend2_name, comment, type)
+                    
     def load_relationship(self):
         pass
         #self.rshps.append(relationship(self, self.arrows[0], self.arrows[1], u'Автобусные астоновки', u'вот такой вот комментарий'))
     #Обновляет БД исходя из массива объектов Arrows
     def db_update_from_arrows(self, e1 = None, e2 = None):
         #self.trend_base.connect_db()
+        self.db_load_from_rshps()
         for arrow_ in self.arrows:
             name ="'"+ arrow_.name + "'"
             sourses ="'" + str(arrow_.sourses) + "'"

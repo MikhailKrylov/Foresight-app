@@ -38,7 +38,7 @@ class relationship(object):
     def __del__(self):
         pass
     def rendring(self):
-        if type == 1: 
+        if self.type == 1: 
             self.color  = self.area.window.get_colormap().alloc(0, 65535, 0)
         else:
             self.color  = self.area.window.get_colormap().alloc(0, 0, 65535)
@@ -46,10 +46,15 @@ class relationship(object):
         gc = drawable.new_gc() 
         gc.foreground = self.color
         gc.line_width = 1  
-        y1 = self.trend1.y
-        y2 = self.trend2.y
-        x1 = self.trend1.s_point + (self.trend1.f_point-self.trend1.s_point)/2
-        x2 = self.trend2.s_point + (self.trend2.f_point-self.trend2.s_point)/2
+        if self.type == 1:
+            y1 = self.trend1.y
+            y2 = self.trend2.y
+            x1 = self.trend1.s_point + (self.trend1.f_point-self.trend1.s_point)/2
+            x2 = self.trend2.s_point + (self.trend2.f_point-self.trend2.s_point)/2  
+        else:
+            y1 = y2 = self.trend1.y
+            x1 = min(self.trend1.f_point, self.trend2.f_point)
+            x2 = max(self.trend1.s_point, self.trend2.s_point)
         self.coord = (x1,y1,x2,y2)
         drawable.draw_line(gc, x1, y1, x2, y2)
     def mouse_motion_on(self): #Действия при наведении мыши
