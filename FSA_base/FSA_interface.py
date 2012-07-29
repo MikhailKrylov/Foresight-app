@@ -165,7 +165,7 @@ class fsainterface(object):  #Главный класс работы с инте
             self.arrows = list()
         trlist = self.trend_base.load()
         for trend in trlist:
-            self.arrows.append(arrow(self.area, self.font, trend[1], trend[2],  trend[3], trend[4], trend[5], trend[6], trend[0]))
+            self.arrows.append(arrow(self, trend[1], trend[2],  trend[3], trend[4], trend[5], trend[6], trend[0]))
         #self.trend_base.cursor.close()
         self.load_relationship()
         self.rendring()

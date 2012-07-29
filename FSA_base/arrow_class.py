@@ -12,11 +12,16 @@ except:
     print("GTK Not Availible")
     sys.exit(1)
 class arrow(object): 
-    def __init__(self, dw_area, font, name, comment, sourses,  power, start_year, year_of_end, id = 0):
+    def __init__(self, parent, name, comment, sourses,  power, start_year, year_of_end, id = 0):
         self.id = id
-        self.area = dw_area
-        self.font = font
-        self.color = dw_area.window.get_colormap().alloc(random.randint(0,65535), random.randint(0,65535), random.randint(0,65535))
+        self.parent = parent
+        self.area =  parent.area
+        if len(self.parent.arrows):
+            self.y = self.parent.arrows[-1].y+50
+        else:
+            self.y = 50
+        self.font = parent.font
+        self.color = self.area.window.get_colormap().alloc(random.randint(0,65535), random.randint(0,65535), random.randint(0,65535))
         self.name = name
         self.comment = comment
         self.sourses = sourses

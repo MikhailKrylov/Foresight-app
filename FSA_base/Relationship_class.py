@@ -27,7 +27,7 @@ class relationship(object):
         self.parent = parent
         self.area = self.parent.area
         y1 = self.trend1.y
-        y2 = self.trend2.y
+        y2 = max(-1, self.trend2.y)
         x1 = self.trend1.s_point + (self.trend1.f_point-self.trend1.s_point)/2
         x2 = self.trend2.s_point + (self.trend2.f_point-self.trend2.s_point)/2
         self.coord = (x1,y1,x2,y2)

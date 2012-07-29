@@ -370,13 +370,13 @@ class Trend_dialog(object): #класс описывающий диалог вн
                     color = self.palitra.get_current_color()
                     if self.Fill:
                         self.arrow_from_data(comment, sourses, f_year, s_year, color)
-                        if len(self.selected_trends[0]):
-                            self.save_rshs()
+                        #if len(self.selected_trends[0])>=1:
+                        self.save_rshs()
                     else:
-                        self.Arrow = arrow(self.parent.area, self.parent.font, name, comment, sourses, power, s_year, f_year)
+                        self.Arrow = arrow(self.parent, name, comment, sourses, power, s_year, f_year)
                         self.parent.arrows.append(self.Arrow)
-                        if len(self.selected_trends[0]):
-                            self.save_rshs()
+                        #if len(self.selected_trends[0])>=1:
+                        self.save_rshs()
                     self.parent.rendring()
                     
                     self.quit_()
