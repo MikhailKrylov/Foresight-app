@@ -6,19 +6,24 @@ import string
 import traceback
 
 class base: #главный класс для работы с базой данных 
-    def __init__(self, type_str, name = "fs_db2.db"):
+    def __init__(self, type_str, name = "fs_db2.db", rb_key = 0):
         self.name = name
         self.type_str = type_str
+        if rb_key == 1:
+            self.connect_db() 
+            self.create(0)
     def create(self, key = 0): #создание новой БД
+        if key == 1:
+            self.refresh_db()
         try:
-            if key == 1:
-                self.refresh_db()
+            #таблица трендов:
+            self.cursor.execute('CREATE TABLE trends (id INTEGER PRIMARY KEY, '+self.type_str+')')
             #таблица отношений:
             self.cursor.execute('CREATE TABLE relationships (id INTEGER PRIMARY KEY,  base_trend TEXT(100), second_trend TEXT(100), comment TEXT(300), type INTEGER(2))')
             #таблица настроек:
-            self.cursor.execute('CREATE TABLE properties (id INTEGER PRIMARY KEY, base_trend TEXT(100), color TEXT(20), position INTEGER(5), type INTEGET(2)')
-            #таблица трендов:
-            self.cursor.execute('CREATE TABLE trends (id INTEGER PRIMARY KEY, '+self.type_str+')')
+           # self.cursor.execute('CREATE TABLE properties (id INTEGER PRIMARY KEY, base_trend TEXT(100), color TEXT(20), position INTEGER(5), type INTEGET(2)')
+            
+            
           
             
         except:

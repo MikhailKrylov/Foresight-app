@@ -21,10 +21,10 @@ except:
     sys.exit(1)
 import db_interface #подключение модуля работы с базой данных
 from arrow_class import arrow #Подключение класса 'стрелки'
-from Relationship_class import relationship
-from new_trend_dialog import Trend_dialog
+from Relationship_class import relationship #Класс "связи"
+from new_trend_dialog import Trend_dialog 
 from Rsh_interface import edit_rsh_dialog
-
+from File_dialog import fildeialog
 
 class Font_selection_window(object): #класс описывающий диалог выбора шрифта
     wTree = None
@@ -60,13 +60,13 @@ class fsainterface(object):  #Главный класс работы с инте
         self.area = self.wTree.get_widget('MainDrawingArea')
         self.window = self.wTree.get_widget('MainWindow')
         self.font_sel_btn = self.wTree.get_widget('font_select_btn')
-        self.new_db_btn = self.wTree.get_widget('new_trend_btn')
+        self.open_db_btn = self.wTree.get_widget('file_open_btn')
         hruler1 = self.wTree.get_widget('hruler1')
         status_lbl = self.wTree.get_widget('status_lbl')
-        self.load_btn = self.wTree.get_widget('normal_trend')
-        self.upload_btn = self.wTree.get_widget('f_trend')
+        self.upload_btn = self.wTree.get_widget('file_save_btn')
         vpaned2 = self.wTree.get_widget("vpaned2")
         self.rsh_on = self.wTree.get_widget('new_rsh_tbtn')
+        self.new_db_btn = self.wTree.get_widget('new_trend_btn')
         self.trand_on = self.wTree.get_widget('new_trend_tbtn')
         self.exit_menu_btn = self.wTree.get_widget('exit_menu_tg')
         self.new_btn = self.wTree.get_widget('new_e_btn')
@@ -74,8 +74,9 @@ class fsainterface(object):  #Главный класс работы с инте
         self.rsh_points = ((0,False),(0, False))
         self.arrows = [] #все 'стрелки'
         self.rshps = [] #все связи между трендами
-        self.db_name = "fs_db2.db" #Название подключаемой БД
-        self.db_visual(0) #подключение БД к интерфейсу 
+        self.db_name = "" #Название подключаемой БД
+        if len(self.db_name)>5:
+            self.db_visual(0) #подключение БД к интерфейсу 
         def motion_notify(ruler, event): #обработка движения мыши по зоне рисования
             if not self.rsh_on.get_active():
                 for arrow in self.arrows:
@@ -99,7 +100,8 @@ class fsainterface(object):  #Главный класс работы с инте
             status_lbl.set_text(str(ruler.get_range()[2])[:4])   
             return ruler.emit('motion_notify_event', event)
         self.area.connect_object('motion_notify_event', motion_notify, hruler1) 
-        self.new_db_btn.connect('activate', self.new_db_dialog) #обработка нажатия клавиши 'Создать'
+        self.open_db_btn.connect('activate', self.new_db_dialog) #обработка нажатия клавиши 'Создать'
+        self.new_db_btn.connect('activate', self.new_db_dialog)
         def mouseclick(Empty_arg,event = None): #обработка щелчка мыши по зоне рисования
             if not self.rsh_on.get_active():
                 for arrow in self.arrows:
@@ -119,17 +121,19 @@ class fsainterface(object):  #Главный класс работы с инте
                 if obj.get_active(): self.trand_on.set_active(0)
                 
         self.area.connect_object('button_press_event', mouseclick, None)
-        self.load_btn.connect('clicked', self.db_load_to_arrows) 
-        self.upload_btn.connect('clicked', self.db_update_from_arrows)  
+        self.upload_btn.connect('activate', self.db_update_from_arrows)  
         self.font_sel_btn.connect('activate', self.open_font_dialog)
         self.trand_on.connect('clicked',btn_switch)
         self.rsh_on.connect('clicked',btn_switch)
         self.exit_menu_btn.connect('activate', self.quit)
+        
         self.new_btn.connect('clicked', self.new_trend_dialog_open)
         gtk.main()
-    def new_db_dialog(self, obj = None):
-        pass
-
+    def new_db_dialog(self, obj = None, e2 = 0):
+        if obj == self.new_db_btn:
+            dialog = fildeialog(self, True)
+        else:
+            dialog = fildeialog(self)
             
     def open_font_dialog(self, widget = None, Emty_arg = None):#вызов диалога выбора шрифта
         fsw = Font_selection_window(self) 
@@ -152,9 +156,9 @@ class fsainterface(object):  #Главный класс работы с инте
             if rsh.type == 0:
                 cont_list.append(rsh)
         n = len(self.arrows)#-len(cont_list)
-        y = 50
-        dy = 50
-        k = hg/(n+1)
+        y = 20
+        dy = 25
+        k = hg/(n+2)
         self.render_v_lines()
         for ar in self.arrows:
             ar.y = y
@@ -192,7 +196,7 @@ class fsainterface(object):  #Главный класс работы с инте
               x+=k
     def db_visual(self,rebuilding_key = 0): #обращение к интерфейсу базы данных
         type_string = 'trend_name UTF8(100), comment UTF8(300),  sources TEXT(300), power INTEGER(2), s_point INTEGER(32), f_point INTEGER(32)'
-        self.trend_base = db_interface.base(type_string, self.db_name)
+        self.trend_base = db_interface.base(type_string, self.db_name, rebuilding_key)
         #trend_base.delete_db()
    #     self.trend_base.create(rebuilding_key)
     def db_load_to_arrows(self, e1 = 0, e2 = None): #Загрузка данных из ДБ

@@ -21,6 +21,11 @@
 			<location>/home/werer/Рабочий стол/F::/media/2D38-14DF/workspace/FSA-app/FSA_base/Font_Selection_interface.glade</location>
 		</link>
 		<link>
+			<name>file_dlg.glade</name>
+			<type>1</type>
+			<location>/media/2D38-14DF/workspace/Foresight-app/FSA_base/file_dlg.glade</location>
+		</link>
+		<link>
 			<name>new_trend_window3.glade</name>
 			<type>1</type>
 			<location>/home/werer/Рабочий стол/F::/Werer/workspace/Foresight-app/Foresight-app/FSA_base/new_trend_window3.glade - (does not exist)</location>
