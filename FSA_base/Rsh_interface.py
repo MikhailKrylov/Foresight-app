@@ -41,7 +41,12 @@ class edit_rsh_dialog(object):
             comment_buffer = gtk.TextBuffer(None)
             comment_buffer.set_text(self.rsh.comment)
             self.comment_txt.set_buffer(comment_buffer)
+        else:
+            self.new_dlg()
         gtk.main()
+    def new_dlg(self):
+        self.trends_cmb_box_load(self.trend_box1)
+        self.trends_cmb_box_load(self.trend_box2)
     def get_ind_from_text(self, trend, cmbbox):
         model = cmbbox.get_model()
         for idex in range(len(model)):
@@ -60,11 +65,14 @@ class edit_rsh_dialog(object):
         if active < 0:
             return None
         return model[active][0]
-    def trends_cmb_box_load(self, cmb_box, trend):
+    def trends_cmb_box_load(self, cmb_box, trend = None):
         #self.trend_list_box.set_wrap_width(1)
         for ar in self.parent.arrows:
             cmb_box.append_text(ar.name)
-        cmb_box.set_active(self.get_ind_from_text(trend, cmb_box))
+        if self.fill:
+            cmb_box.set_active(self.get_ind_from_text(trend, cmb_box))
+        else:
+            cmb_box.set_active(0)
     def save_(self, obj = None):
         if self.fill:
             pr = [False, False]
@@ -84,5 +92,23 @@ class edit_rsh_dialog(object):
                 self.quit_()
             else:
                 print "Выберите корректные значения."
+        else:
+            if self.trend_box1.get_active() and self.trend_box2.get_active():
+                if self.trend_box1.get_active() != self.trend_box2.get_active():
+                    trend_txt1 = self.get_active_text(self.trend_box1)
+                    trend_txt2 = self.get_active_text(self.trend_box2)
+                    trend1 = self.search_arrow(trend_txt1)
+                    trend2 = self.search_arrow(trend_txt2)
+                    comment_b = self.comment_txt.get_buffer()
+                    comment =str(comment_b.get_text(comment_b.get_start_iter(), comment_b.get_end_iter()))
+                    type = self.ed_res_rb.get_active()
+                    self.rsh = relationship(self.parent, trend1, trend2, type, comment)
+                    self.parent.rshps.append(self.rsh)
+                    self.parent.rendring()
+                    self.quit_()
+    def search_arrow(self, name):
+        for ar in self.parent.arrows:
+            if ar.name == name:
+                return ar      
     def quit_(self,e = None):
         self.window.destroy()

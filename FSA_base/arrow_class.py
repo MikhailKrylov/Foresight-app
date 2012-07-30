@@ -35,6 +35,7 @@ class arrow(object):
         self.arrow_rnd = True
         self.get_mouse_motion = False
         self.to_delete = False
+        self.render = False
     def __del__(self):
         pass
     def rendring(self, y):

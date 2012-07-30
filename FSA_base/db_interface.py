@@ -98,15 +98,12 @@ class base: #главный класс для работы с базой дан�
         return found_trend
        # self.cursor.close()
     def del_rsh(self, trend1_name, trend2_name, type):
-        tt = 'DELETE FROM relationships WHERE  base_trend LIKE '+trend1_name +' AND second_trend LIKE '+trend2_name+ 'AND type LIKE '+ type
-        print tt
         self.cursor.execute('DELETE FROM relationships WHERE  base_trend LIKE '+trend1_name +' AND second_trend LIKE '+trend2_name+ 'AND type LIKE '+ type)
     def verty_db(self):
         #self.cursor = self.connect.cursor()
         self.cursor.execute('DELETE FROM trends WHERE length(trend_name)<1')
         self.cursor.execute('DELETE FROM trends WHERE s_point<2000')
         self.cursor.execute('DELETE FROM trends WHERE f_point<2000')
-        
     def update_str(self, column, data, key_status, key = "trend_name", table = "trends"):
         #self.cursor = self.connect.cursor()
         ex_str = 'UPDATE '+table+' SET '+column+ ' = '+data+' WHERE '+str(key)+' LIKE ' +str(key_status)

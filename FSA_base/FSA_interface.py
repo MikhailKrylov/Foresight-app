@@ -35,6 +35,7 @@ class Font_selection_window(object): #класс описывающий диал
         self.cansel_btn = self.wTree.get_widget('cancel_btn')
         self.ok_btn = self.wTree.get_widget('ok_btn')
         self.fontseldlg = self.wTree.get_widget('fontselection1')
+        
         self.fontseldlg.set_font_name(parent.font)
         def quit_(Emty_arg): #выход
             self.window.destroy()
@@ -47,18 +48,19 @@ class Font_selection_window(object): #класс описывающий диал
             self.parent.rendring()
             self.window.destroy()
         self.ok_btn.connect_object('clicked', OK_, None) #Обработка нажатия клавиши 'Ок'
+        
         gtk.main()
         
 ##главный класс для работы с графическим интерфейсом    
 class fsainterface(object):  #Главный класс работы с интерфейсом.
     wTree = None
     def __init__(self):
+        self.font = 'Sans 16'
         self.wTree = gtk.glade.XML( 'main_interface.glade' ) #подключение glade оболочки
         self.area = self.wTree.get_widget('MainDrawingArea')
         self.window = self.wTree.get_widget('MainWindow')
-        self.font = 'Sans 19'
         self.font_sel_btn = self.wTree.get_widget('font_select_btn')
-        self.new_btn = self.wTree.get_widget('new_trend_btn')
+        self.new_db_btn = self.wTree.get_widget('new_trend_btn')
         hruler1 = self.wTree.get_widget('hruler1')
         status_lbl = self.wTree.get_widget('status_lbl')
         self.load_btn = self.wTree.get_widget('normal_trend')
@@ -67,6 +69,7 @@ class fsainterface(object):  #Главный класс работы с инте
         self.rsh_on = self.wTree.get_widget('new_rsh_tbtn')
         self.trand_on = self.wTree.get_widget('new_trend_tbtn')
         self.exit_menu_btn = self.wTree.get_widget('exit_menu_tg')
+        self.new_btn = self.wTree.get_widget('new_e_btn')
         self.win_size = self.window.allocation
         self.rsh_points = ((0,False),(0, False))
         self.arrows = [] #все 'стрелки'
@@ -96,10 +99,8 @@ class fsainterface(object):  #Главный класс работы с инте
             status_lbl.set_text(str(ruler.get_range()[2])[:4])   
             return ruler.emit('motion_notify_event', event)
         self.area.connect_object('motion_notify_event', motion_notify, hruler1) 
-        self.new_btn.connect_object('activate', self.new_trend_dialog_open, None) #обработка нажатия клавиши 'Создать'
+        self.new_db_btn.connect('activate', self.new_db_dialog) #обработка нажатия клавиши 'Создать'
         def mouseclick(Empty_arg,event = None): #обработка щелчка мыши по зоне рисования
-         #   if not self.rsh_points[0][1]:
-         #       print event
             if not self.rsh_on.get_active():
                 for arrow in self.arrows:
                     if arrow.get_mouse_motion:
@@ -110,6 +111,7 @@ class fsainterface(object):  #Главный класс работы с инте
                             edit_dlg = edit_rsh_dialog(self, rsh)            
     
             #print  e1[2]-60,  new_rect.width
+    
         def btn_switch(obj,scd =None):
             if obj == self.trand_on:
                 if obj.get_active(): self.rsh_on.set_active(0)
@@ -123,13 +125,20 @@ class fsainterface(object):  #Главный класс работы с инте
         self.trand_on.connect('clicked',btn_switch)
         self.rsh_on.connect('clicked',btn_switch)
         self.exit_menu_btn.connect('activate', self.quit)
+        self.new_btn.connect('clicked', self.new_trend_dialog_open)
         gtk.main()
-        
+    def new_db_dialog(self, obj = None):
+        pass
+
+            
     def open_font_dialog(self, widget = None, Emty_arg = None):#вызов диалога выбора шрифта
         fsw = Font_selection_window(self) 
 
     def new_trend_dialog_open(self,Emty_arg = None): #Вызов диалога 'новый тренд'
-        ntw = Trend_dialog(self)
+        if self.trand_on.get_active():
+            ntw = Trend_dialog(self)
+        else:
+            aa = edit_rsh_dialog(self, None, False)
     def quit(self, widget, ar1 = None): #выход (уничтожение окна)
         self.trend_base.cursor.close()
         self.trend_base.connect.close()
@@ -142,16 +151,31 @@ class fsainterface(object):  #Главный класс работы с инте
         for rsh in self.rshps:
             if rsh.type == 0:
                 cont_list.append(rsh)
-        n = len(self.arrows)-len(cont_list)
+        n = len(self.arrows)#-len(cont_list)
         y = 50
+        dy = 50
         k = hg/(n+1)
         self.render_v_lines()
         for ar in self.arrows:
-            for rs in cont_list:
-                if rs.trend1 == ar:
-                    y = rs.trend2.y
-            ar.rendring(y)
-            y+=k
+            ar.y = y
+            y +=k
+        for rs in cont_list:
+            if rs.trend1 == ar:
+                if rs.trend1.y<rs.trend2.y:
+                    dy = rs.trend1.y
+                    rs.trend2.y = dy
+                else:
+                    dy = rs.trend2.y
+                    rs.trend1.y = dy
+                rs.trend1.rendring(dy)
+                rs.trend2.rendring(dy)
+                rs.trend1.render = True
+                rs.trend2.render = True
+        for ar in self.arrows:
+            if not ar.render:
+                ar.rendring(y)
+        for ar in self.arrows:
+            ar.render = False
         for rsh in self.rshps:
             if not rsh.to_delete:
                 rsh.rendring()
@@ -190,7 +214,7 @@ class fsainterface(object):  #Главный класс работы с инте
         for rsh in self.rshps:
             trend1_name ="'" + rsh.trend1.name + "'"
             trend2_name ="'" + rsh.trend2.name + "'"
-            type = str(rsh.type)
+            type = str(int(rsh.type))
             if not rsh.to_delete:
                 comment ="'"+ rsh.comment + "'"
                 fnd = self.trend_base.rsh_verty(trend1_name, trend2_name, type)
