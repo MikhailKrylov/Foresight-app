@@ -49,12 +49,18 @@
                     </child>
                     <child>
                       <widget class="GtkImageMenuItem" id="file_open_btn">
-                        <property name="label">gtk-open</property>
+                        <property name="label">Загрузить...</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="use_action_appearance">False</property>
-                        <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
+                        <property name="use_stock">False</property>
+                        <child internal-child="image">
+                          <widget class="GtkImage" id="image2">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="stock">gtk-missing-image</property>
+                          </widget>
+                        </child>
                       </widget>
                     </child>
                     <child>
