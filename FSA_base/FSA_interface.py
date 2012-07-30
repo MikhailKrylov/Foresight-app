@@ -156,23 +156,25 @@ class fsainterface(object):  #Главный класс работы с инте
             if rsh.type == 0:
                 cont_list.append(rsh)
         n = len(self.arrows)#-len(cont_list)
-        y = 20
-        dy = 25
+        y = 50
+        dy = 50
         k = hg/(n+2)
         self.render_v_lines()
         for ar in self.arrows:
             ar.y = y
             y +=k
         for rs in cont_list:
-            if rs.trend1 == ar:
+            if rs.trend1 == ar or rs.trend2 == ar:
                 if rs.trend1.y<rs.trend2.y:
                     dy = rs.trend1.y
                     rs.trend2.y = dy
                 else:
                     dy = rs.trend2.y
                     rs.trend1.y = dy
-                rs.trend1.rendring(dy)
-                rs.trend2.rendring(dy)
+                if not rs.trend1.render:
+                    rs.trend1.rendring(dy)
+                if not rs.trend2.render:
+                    rs.trend2.rendring(dy)
                 rs.trend1.render = True
                 rs.trend2.render = True
         for ar in self.arrows:
