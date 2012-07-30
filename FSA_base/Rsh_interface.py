@@ -50,8 +50,8 @@ class edit_rsh_dialog(object):
         return None
     def del_rsh(self, obj = None, e = None):
         self.rsh.to_delete = True
-        self.parent.rshps.remove(self.rsh)
-        del self.rsh
+        #self.parent.rshps.remove(self.rsh)
+        #del self.rsh
         self.parent.rendring()
         self.quit_()
     def get_active_text(self,combobox):

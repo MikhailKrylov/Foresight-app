@@ -153,7 +153,8 @@ class fsainterface(object):  #Главный класс работы с инте
             ar.rendring(y)
             y+=k
         for rsh in self.rshps:
-            rsh.rendring()
+            if not rsh.to_delete:
+                rsh.rendring()
     def render_v_lines(self):
         drawable = self.area.window
         color = self.area.window.get_colormap().alloc(55535, 55535, 65535)
@@ -201,7 +202,7 @@ class fsainterface(object):  #Главный класс работы с инте
             else:
                 fnd = self.trend_base.rsh_verty(trend1_name, trend2_name, type)
                 trend1_name, trend2_name = fnd
-                self.trend_base.del_rsh(trand1, trand2, type)    
+                self.trend_base.del_rsh(trend1_name, trend2_name, type)    
     def search_arrow(self, name):
         for ar in self.arrows:
             if ar.name == name:
