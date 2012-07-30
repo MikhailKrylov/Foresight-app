@@ -259,6 +259,7 @@
                     <property name="receives_default">True</property>
                     <property name="tooltip" translatable="yes">Новый тренд</property>
                     <property name="use_action_appearance">False</property>
+                    <property name="active">True</property>
                   </widget>
                   <packing>
                     <property name="x">3</property>

@@ -85,7 +85,11 @@ class fsainterface(object):  #Главный класс работы с инте
                         arrow.mouse_motion_off()
             else:
                 for rsh in self.rshps:
-                    if event.x in range(min(rsh.coord[0], rsh.coord[2]), max(rsh.coord[0], rsh.coord[2]))  and event.y in range(min(rsh.coord[1], rsh.coord[3])-1, max(rsh.coord[1], rsh.coord[3])+1):
+                    x1,y1 = float(rsh.coord[0]), float(rsh.coord[1])
+                    x2,y2 = float(rsh.coord[2]), float(rsh.coord[3])
+                    if x2-x1 and y2-y1:
+                        d = abs(event.x/(x2-x1) - event.y/(y2-y1)+y1/(y2-y1)-x1/(x2-x1))/((1/(x2-x1)**2+ 1/(y2-y1)**2)**(1./2.))
+                    if d < 2:
                         rsh.mouse_motion_on()
                     else:
                         rsh.mouse_motion_off()
@@ -103,7 +107,7 @@ class fsainterface(object):  #Главный класс работы с инте
             else:
                 for rsh in self.rshps:
                     if rsh.get_mouse_motion:
-                            edit_dlg = edit_rsh_dialog(self, self.rshps[-1])            
+                            edit_dlg = edit_rsh_dialog(self, rsh)            
     
             #print  e1[2]-60,  new_rect.width
         def btn_switch(obj,scd =None):
@@ -183,11 +187,10 @@ class fsainterface(object):  #Главный класс работы с инте
         self.trend_base.add_data(data_string)
     def db_load_from_rshps(self):
         for rsh in self.rshps:
+            trend1_name ="'" + rsh.trend1.name + "'"
+            trend2_name ="'" + rsh.trend2.name + "'"
+            type = str(rsh.type)
             if not rsh.to_delete:
-                plagiat = [False, False]
-                trend1_name ="'" + rsh.trend1.name + "'"
-                trend2_name ="'" + rsh.trend2.name + "'"
-                type = str(rsh.type)
                 comment ="'"+ rsh.comment + "'"
                 fnd = self.trend_base.rsh_verty(trend1_name, trend2_name, type)
                 if not fnd:
@@ -195,6 +198,10 @@ class fsainterface(object):  #Главный класс работы с инте
                 else:
                     trend1_name, trend2_name = fnd
                     self.trend_base.upd_rsh(trend1_name, trend2_name, comment, type)
+            else:
+                fnd = self.trend_base.rsh_verty(trend1_name, trend2_name, type)
+                trend1_name, trend2_name = fnd
+                self.trend_base.del_rsh(trand1, trand2, type)    
     def search_arrow(self, name):
         for ar in self.arrows:
             if ar.name == name:

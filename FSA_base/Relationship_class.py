@@ -26,14 +26,19 @@ class relationship(object):
         self.comment = comment
         self.parent = parent
         self.area = self.parent.area
-        y1 = self.trend1.y
-        y2 = max(-1, self.trend2.y)
         if type == 1: 
+            y1 = self.trend1.y
+            y2 = self.trend2.y
+            x1 = self.trend1.s_point + (self.trend1.f_point-self.trend1.s_point)/2
+            x2 = self.trend2.s_point + (self.trend2.f_point-self.trend2.s_point)/2
             self.color  = self.area.window.get_colormap().alloc(0, 65535, 0)
         else:
+            y1 = self.trend1.y
+            y2 = y1+1
+            x1 = min(self.trend1.f_point, self.trend2.f_point)
+            x2 = max(self.trend1.s_point, self.trend2.s_point)
             self.color  = self.area.window.get_colormap().alloc(0, 0, 65535)
-        x1 = self.trend1.s_point + (self.trend1.f_point-self.trend1.s_point)/2
-        x2 = self.trend2.s_point + (self.trend2.f_point-self.trend2.s_point)/2
+        
         self.coord = (x1,y1,x2,y2)
     def __del__(self):
         pass
@@ -52,13 +57,14 @@ class relationship(object):
             x1 = self.trend1.s_point + (self.trend1.f_point-self.trend1.s_point)/2
             x2 = self.trend2.s_point + (self.trend2.f_point-self.trend2.s_point)/2  
         else:
-            y1 = y2 = self.trend1.y
+            y1 = self.trend1.y
+            y2 = y1+1
             x1 = min(self.trend1.f_point, self.trend2.f_point)
             x2 = max(self.trend1.s_point, self.trend2.s_point)
         self.coord = (x1,y1,x2,y2)
         drawable.draw_line(gc, x1, y1, x2, y2)
     def mouse_motion_on(self): #Действия при наведении мыши
-        x1,y1,x2,y2 = self.coord
+        x1,y1,x2,y2  = self.coord
         drawable = self.area.window
         color = self.area.window.get_colormap().alloc(55535, 25535, 535)
         gc = drawable.new_gc()
@@ -67,8 +73,7 @@ class relationship(object):
         drawable.draw_arc(gc, True, x2-5, y2-10, 8, 8, 0, 360*64)
         self.get_mouse_motion = True
     def mouse_motion_off(self):
-        x1,y1,x2,y2 = self.coord
-       ##
+        x1,y1,x2,y2  = self.coord 
         drawable = self.area.window
         bgcolor = self.area.window.get_colormap().alloc(62194, 61937, 61680)
         gc = drawable.new_gc()
